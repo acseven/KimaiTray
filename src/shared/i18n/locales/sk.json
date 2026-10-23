@@ -109,7 +109,7 @@
     "baseUrlDescription": "Koreňová URL adresa vašej inštalácie Kimai",
     "baseUrlPlaceholder": "https://kimai.example.com",
     "apiToken": "API token",
-    "apiTokenDescription": "Vygenerujte ho v Kimai → Nastavenia → API",
+    "apiTokenDescription": "Osobný prístupový token z vášho profilu v Kimai → Prístup k API",
     "apiTokenPlaceholder": "Vložte váš API token",
     "testAndSave": "Otestovať a uložiť",
     "testing": "Testuje sa…",
@@ -120,7 +120,21 @@
     "unexpectedError": "Neočakávaná chyba pri teste pripojenia",
     "redirectToHttps": "Server presmerúva na HTTPS. Ako Kimai URL použite {{url}}.",
     "redirectTo": "Server presmerúva na {{url}}. Ako Kimai URL použite túto adresu.",
-    "connectionFailed": "Pripojenie zlyhalo"
+    "connectionFailed": "Pripojenie zlyhalo",
+    "tokenGuide": {
+      "toggle": "Ako získam token?",
+      "title": "Získajte API token",
+      "stepOpen": "Otvorte svoj profil v Kimai v prehliadači a v prípade potreby sa prihláste.",
+      "openProfile": "Otvoriť môj profil v Kimai",
+      "urlFirst": "Najprv zadajte URL adresu Kimai vyššie.",
+      "openFailed": "Prehliadač sa nepodarilo otvoriť.",
+      "stepCreate": "Prejdite na kartu „{{apiTab}}“ a kliknite na „{{create}}“.",
+      "stepName": "Pomenujte token (napríklad KimaiTray), voliteľne nastavte dátum platnosti a uložte.",
+      "stepPaste": "Skopírujte token — Kimai ho zobrazí iba raz — vložte ho do poľa vyššie a kliknite na Otestovať a uložiť.",
+      "noApiTab": "Nevidíte kartu „{{apiTab}}“? Požiadajte administrátora Kimai o prístup k API.",
+      "kimaiApiTab": "Prístup k API",
+      "kimaiCreate": "Vytvoriť"
+    }
   },
   "plugins": {
     "title": "Plugins",

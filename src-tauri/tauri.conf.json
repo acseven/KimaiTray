@@ -93,7 +93,7 @@
     "homepage": "https://github.com/Engazan/KimaiTray",
     "windows": {
       "nsis": {
-        "installMode": "currentUser",
+        "installMode": "both",
         "displayLanguageSelector": true,
         "languages": ["English", "Slovak", "Czech", "German", "Ukrainian"]
       },

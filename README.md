@@ -221,15 +221,48 @@ The tray icon appears in your menu bar / system tray. Click it to open the popup
 
 ## Kimai API Token Setup
 
-1. Log into your Kimai instance
-2. Go to your profile (click your avatar) -> **API Access**
-3. Click **Create** to generate a new API token
-4. Copy the token
-5. In KimaiTray, click the tray icon -> **Settings** -> **Connection**
-6. Enter your Kimai URL (e.g. `https://kimai.example.com`) and paste the token
-7. Click **Test & Save**
+1. In KimaiTray, click the tray icon -> **Settings** -> **Connection**
+2. Enter your Kimai URL (e.g. `https://kimai.example.com`)
+3. Use **How do I get a token?** below the token field (shown automatically
+   while no connection exists) and click **Open my Kimai profile**. Your
+   browser opens Kimai's own-profile page in the app language; sign in if asked
+4. In Kimai, open the **API Access** tab and click **Create**, name the token
+   (for example `KimaiTray`) and save
+5. Copy the token (Kimai shows it only once), paste it into KimaiTray and click
+   **Test & Save**
 
-> Token permissions depend on your Kimai role. Admin or Team Lead roles provide full API access.
+> Token permissions depend on your Kimai role. If the **API Access** tab is
+> missing, your Kimai administrator has not granted you API access.
+
+## Windows Installation and Deployment
+
+Each Windows release ships two installers:
+
+| Installer | Scope | Silent install |
+|-----------|-------|----------------|
+| `KimaiTray_<version>_x64-setup.exe` (NSIS) | Asks for **Only for me** (no admin rights) or **Anyone who uses this computer** (admin) | `/S /CurrentUser` or `/S /AllUsers` (elevated) |
+| `KimaiTray_<version>_x64_en-US.msi` | Machine-wide (`Program Files`) | `msiexec /i KimaiTray_<version>_x64_en-US.msi /qn` |
+
+Always pass `/CurrentUser` or `/AllUsers` for silent NSIS installs; without
+it, the mode depends on whether the installer runs elevated. Use the MSI for
+Group Policy Software Installation (computer assignment) and the NSIS
+installer with `/S /CurrentUser` from a user logon script when users should
+own and update their installation.
+
+Notes for managed installations:
+
+- Settings and the connection list are stored per user in
+  `%APPDATA%\eu.engazan.kimaitray`; API tokens are stored in each user's
+  Windows Credential Manager. Each user connects once using the guided token
+  flow above.
+- Updating a machine-wide installation requires administrator rights, so
+  standard users see a UAC prompt for in-app updates. Disable **automatic
+  updates** in Settings and roll out new versions centrally instead.
+- The installers download the WebView2 runtime when it is missing (Windows 11
+  includes it). For offline or proxied machines, deploy the WebView2 Evergreen
+  runtime beforehand.
+- **Launch at login** is a per-user setting stored under
+  `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`.
 
 ## Building for Production
 

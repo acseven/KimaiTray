@@ -109,7 +109,7 @@
     "baseUrlDescription": "Коренева URL-адреса вашої інсталяції Kimai",
     "baseUrlPlaceholder": "https://kimai.example.com",
     "apiToken": "API-токен",
-    "apiTokenDescription": "Згенеруйте його в Kimai → Налаштування → API",
+    "apiTokenDescription": "Особистий токен доступу з вашого профілю Kimai → API",
     "apiTokenPlaceholder": "Вставте ваш API-токен",
     "testAndSave": "Перевірити і зберегти",
     "testing": "Перевірка…",
@@ -120,7 +120,21 @@
     "unexpectedError": "Неочікувана помилка під час перевірки підключення",
     "redirectToHttps": "Сервер перенаправляє на HTTPS. Використайте {{url}} як URL Kimai.",
     "redirectTo": "Сервер перенаправляє на {{url}}. Використайте цю адресу як URL Kimai.",
-    "connectionFailed": "Підключення не вдалося"
+    "connectionFailed": "Підключення не вдалося",
+    "tokenGuide": {
+      "toggle": "Як отримати токен?",
+      "title": "Отримайте API-токен",
+      "stepOpen": "Відкрийте свій профіль Kimai у браузері та за потреби увійдіть.",
+      "openProfile": "Відкрити мій профіль Kimai",
+      "urlFirst": "Спочатку введіть URL-адресу Kimai вище.",
+      "openFailed": "Не вдалося відкрити браузер.",
+      "stepCreate": "Перейдіть на вкладку «{{apiTab}}» і натисніть «{{create}}».",
+      "stepName": "Назвіть токен (наприклад, KimaiTray), за бажанням вкажіть термін дії та збережіть.",
+      "stepPaste": "Скопіюйте токен — Kimai показує його лише один раз — вставте його в поле вище та натисніть «Перевірити і зберегти».",
+      "noApiTab": "Немає вкладки «{{apiTab}}»? Попросіть адміністратора Kimai надати вам доступ до API.",
+      "kimaiApiTab": "API",
+      "kimaiCreate": "Створити"
+    }
   },
   "plugins": {
     "title": "Plugins",

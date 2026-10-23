@@ -109,7 +109,7 @@
     "baseUrlDescription": "Die Stamm-URL Ihrer Kimai-Installation",
     "baseUrlPlaceholder": "https://kimai.example.com",
     "apiToken": "API-Token",
-    "apiTokenDescription": "Erstellen Sie einen in Kimai → Einstellungen → API",
+    "apiTokenDescription": "Persönlicher Zugriffstoken aus Ihrem Kimai-Profil → API-Zugang",
     "apiTokenPlaceholder": "API-Token einfügen",
     "testAndSave": "Testen & Speichern",
     "testing": "Wird getestet…",
@@ -120,7 +120,21 @@
     "unexpectedError": "Unerwarteter Fehler beim Verbindungstest",
     "redirectToHttps": "Der Server leitet auf HTTPS um. Verwende {{url}} als Kimai-URL.",
     "redirectTo": "Der Server leitet auf {{url}} um. Verwende diese Adresse als Kimai-URL.",
-    "connectionFailed": "Verbindung fehlgeschlagen"
+    "connectionFailed": "Verbindung fehlgeschlagen",
+    "tokenGuide": {
+      "toggle": "Wie erhalte ich einen Token?",
+      "title": "API-Token erstellen",
+      "stepOpen": "Öffnen Sie Ihr Kimai-Profil im Browser und melden Sie sich bei Bedarf an.",
+      "openProfile": "Mein Kimai-Profil öffnen",
+      "urlFirst": "Geben Sie zuerst oben Ihre Kimai-URL ein.",
+      "openFailed": "Der Browser konnte nicht geöffnet werden.",
+      "stepCreate": "Wechseln Sie zum Tab „{{apiTab}}“ und klicken Sie auf „{{create}}“.",
+      "stepName": "Benennen Sie den Token (z. B. KimaiTray), legen Sie optional ein Ablaufdatum fest und speichern Sie.",
+      "stepPaste": "Kopieren Sie den Token — Kimai zeigt ihn nur einmal an —, fügen Sie ihn oben ein und klicken Sie auf Testen & Speichern.",
+      "noApiTab": "Kein Tab „{{apiTab}}“? Bitten Sie Ihren Kimai-Administrator um API-Zugriff.",
+      "kimaiApiTab": "API-Zugang",
+      "kimaiCreate": "Erstellen"
+    }
   },
   "plugins": {
     "title": "Plugins",

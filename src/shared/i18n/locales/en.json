@@ -109,7 +109,7 @@
     "baseUrlDescription": "The root URL of your Kimai installation",
     "baseUrlPlaceholder": "https://kimai.example.com",
     "apiToken": "API Token",
-    "apiTokenDescription": "Generate one in Kimai → Settings → API",
+    "apiTokenDescription": "Personal access token from your Kimai profile → API Access",
     "apiTokenPlaceholder": "Paste your API token",
     "testAndSave": "Test & Save",
     "testing": "Testing…",
@@ -120,7 +120,21 @@
     "unexpectedError": "Unexpected error during connection test",
     "redirectToHttps": "The server redirects to HTTPS. Use {{url}} as the Kimai URL.",
     "redirectTo": "The server redirects to {{url}}. Use that address as the Kimai URL.",
-    "connectionFailed": "Connection failed"
+    "connectionFailed": "Connection failed",
+    "tokenGuide": {
+      "toggle": "How do I get a token?",
+      "title": "Get your API token",
+      "stepOpen": "Open your Kimai profile in the browser and sign in if asked.",
+      "openProfile": "Open my Kimai profile",
+      "urlFirst": "Enter your Kimai URL above first.",
+      "openFailed": "Could not open the browser.",
+      "stepCreate": "Go to the “{{apiTab}}” tab and click “{{create}}”.",
+      "stepName": "Name the token (for example KimaiTray), optionally set an expiry date, and save.",
+      "stepPaste": "Copy the token — Kimai shows it only once — paste it into the field above and click Test & Save.",
+      "noApiTab": "No “{{apiTab}}” tab? Ask your Kimai administrator to grant you API access.",
+      "kimaiApiTab": "API Access",
+      "kimaiCreate": "Create"
+    }
   },
   "plugins": {
     "title": "Plugins",

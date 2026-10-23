@@ -6,6 +6,7 @@ import { getConnectionToken } from "../api/connectionTokenStore";
 import IntegrationsSection from "./IntegrationsSection";
 import FeaturesSection from "./FeaturesSection";
 import PluginsSection from "./PluginsSection";
+import ApiTokenGuide from "./ApiTokenGuide";
 import { TextInput } from "./Controls";
 import {
   SettingsList,
@@ -418,6 +419,10 @@ export default function ConnectionSection({
                   {showToken ? t("common.hide") : t("common.show")}
                 </button>
               </div>
+              <ApiTokenGuide
+                url={url}
+                defaultOpen={settings.connections.length === 0}
+              />
             </SettingsRowStacked>
           </SettingsList>
 

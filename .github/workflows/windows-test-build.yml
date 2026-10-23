@@ -1,0 +1,52 @@
+name: Windows Test Build
+
+# Unsigned Windows installers for manual testing. Runs on pushes to this
+# branch and publishes them to a private draft release.
+on:
+  push:
+    branches: ["ci/windows-test-build"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install repository Rust toolchain
+        run: rustup show active-toolchain
+      - uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae # v2
+        with:
+          workspaces: src-tauri -> target
+      - run: npm ci
+      # No updater signing key in this fork, so skip updater artifacts.
+      - name: Build installers
+        shell: bash
+        run: npm run tauri build -- --config '{"bundle":{"createUpdaterArtifacts":false}}'
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: kimaitray-windows-test
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/msi/*.msi
+          if-no-files-found: error
+          retention-days: 14
+      - name: Publish draft test release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="test-${GITHUB_SHA::7}"
+          gh release create "$tag" --draft --prerelease --target "$GITHUB_SHA" \
+            --title "Windows test build ${GITHUB_SHA::7}" \
+            --notes "Unsigned test build of $GITHUB_REF_NAME. Not for distribution." \
+            src-tauri/target/release/bundle/nsis/*.exe \
+            src-tauri/target/release/bundle/msi/*.msi

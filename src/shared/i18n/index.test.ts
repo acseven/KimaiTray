@@ -13,6 +13,8 @@ describe("language resolution", () => {
     ["de-DE", "de"],
     ["uk-UA", "uk"],
     ["ua", "uk"],
+    ["pt-PT", "pt"],
+    ["pt-BR", "pt"],
     ["en-US", "en"],
     ["fr-FR", "en"],
   ] as const)("maps %s to %s", (browserLanguage, expected) => {

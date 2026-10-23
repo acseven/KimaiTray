@@ -40,6 +40,9 @@ describe("kimaiProfileUrl", () => {
     expect(kimaiProfileUrl(" https://example.test/kimai// ", "sk")).toBe(
       "https://example.test/kimai/sk/profile/",
     );
+    expect(kimaiProfileUrl("https://kimai.example.test", "pt")).toBe(
+      "https://kimai.example.test/pt/profile/",
+    );
   });
 
   it("falls back to English for languages Kimai is not opened in", () => {

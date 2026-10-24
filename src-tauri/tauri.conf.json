@@ -97,6 +97,16 @@
         "displayLanguageSelector": true,
         "languages": ["English", "Slovak", "Czech", "German", "Ukrainian", "Portuguese"]
       },
+      "wix": {
+        "language": {
+          "en-US": {},
+          "pt-PT": { "localePath": "wix/pt-PT.wxl" },
+          "de-DE": { "localePath": "wix/de-DE.wxl" },
+          "cs-CZ": { "localePath": "wix/cs-CZ.wxl" },
+          "sk-SK": { "localePath": "wix/sk-SK.wxl" },
+          "uk-UA": { "localePath": "wix/uk-UA.wxl" }
+        }
+      },
       "webviewInstallMode": {
         "type": "downloadBootstrapper"
       }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="uk-ua" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+  <String Id="LaunchApp">Запустити KimaiTray</String>
+  <String Id="DowngradeErrorMessage">Новішу версію KimaiTray вже встановлено.</String>
+  <String Id="PathEnvVarFeature">Додає розташування виконуваного файлу KimaiTray до системної змінної середовища PATH. Це дає змогу запускати KimaiTray з будь-якого розташування.</String>
+  <String Id="InstallAppFeature">Встановлює KimaiTray.</String>
+</WixLocalization>

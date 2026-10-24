@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="cs-cz" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+  <String Id="LaunchApp">Spustit KimaiTray</String>
+  <String Id="DowngradeErrorMessage">Novější verze KimaiTray je již nainstalována.</String>
+  <String Id="PathEnvVarFeature">Přidá umístění instalace spustitelného souboru KimaiTray do systémové proměnné prostředí PATH. Díky tomu lze KimaiTray spustit z libovolného umístění.</String>
+  <String Id="InstallAppFeature">Nainstaluje KimaiTray.</String>
+</WixLocalization>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="de-de" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+  <String Id="LaunchApp">KimaiTray starten</String>
+  <String Id="DowngradeErrorMessage">Eine neuere Version von KimaiTray ist bereits installiert.</String>
+  <String Id="PathEnvVarFeature">Fügt den Installationsort der ausführbaren Datei von KimaiTray zur Systemumgebungsvariable PATH hinzu. Dadurch kann KimaiTray von jedem Ort aus aufgerufen werden.</String>
+  <String Id="InstallAppFeature">Installiert KimaiTray.</String>
+</WixLocalization>

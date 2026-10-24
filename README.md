@@ -236,12 +236,18 @@ The tray icon appears in your menu bar / system tray. Click it to open the popup
 
 ## Windows Installation and Deployment
 
-Each Windows release ships two installers:
+Each Windows release ships installers for x64 and ARM64 (`<arch>` is `x64`
+or `arm64`):
 
 | Installer | Scope | Silent install |
 |-----------|-------|----------------|
-| `KimaiTray_<version>_x64-setup.exe` (NSIS) | Asks for **Only for me** (no admin rights) or **Anyone who uses this computer** (admin) | `/S /CurrentUser` or `/S /AllUsers` (elevated) |
-| `KimaiTray_<version>_x64_en-US.msi` | Machine-wide (`Program Files`) | `msiexec /i KimaiTray_<version>_x64_en-US.msi /qn` |
+| `KimaiTray_<version>_<arch>-setup.exe` (NSIS, all languages) | Asks for **Only for me** (no admin rights) or **Anyone who uses this computer** (admin) | `/S /CurrentUser` or `/S /AllUsers` (elevated) |
+| `KimaiTray_<version>_<arch>_<culture>.msi` | Machine-wide (`Program Files`) | `msiexec /i KimaiTray_<version>_<arch>_<culture>.msi /qn` |
+
+The MSI is built once per installer language: `en-US`, `pt-PT`, `de-DE`,
+`cs-CZ`, `sk-SK` and `uk-UA`. The language only affects the installer
+dialogs; the application picks its own language at runtime. The installer
+texts added by KimaiTray live in `src-tauri/wix/<culture>.wxl`.
 
 Always pass `/CurrentUser` or `/AllUsers` for silent NSIS installs; without
 it, the mode depends on whether the installer runs elevated. Use the MSI for
@@ -280,7 +286,7 @@ npm run build:prod
 | Platform | Artifacts |
 |----------|-----------|
 | macOS | `src-tauri/target/release/bundle/dmg/` and `.app` |
-| Windows | `src-tauri/target/release/bundle/nsis/` |
+| Windows | `src-tauri/target/release/bundle/nsis/` and `msi/` |
 | Linux | `src-tauri/target/release/bundle/appimage/`, `deb/` |
 
 ## Environment Configuration
@@ -367,7 +373,7 @@ GitHub Actions workflow at `.github/workflows/build.yml`:
 
 - Build & Release triggers on version tags (`v*`) and manual `workflow_dispatch` runs
 - Verification also runs on pushes to `main` and pull requests via `.github/workflows/verify.yml`
-- Cross-platform matrix: macOS (ARM + Intel), Linux, Windows
+- Cross-platform matrix: macOS (ARM + Intel), Linux, Windows (x64 + ARM64)
 - On version tags (`v*`), creates a draft GitHub Release with all platform artifacts
 
 To release (replace `X.Y.Z` with the version from `package.json`):

@@ -46,7 +46,13 @@ jobs:
       - name: Merge localized MSIs into one multilingual MSI
         id: merge
         shell: pwsh
-        run: ./scripts/merge-msi-languages.ps1 -BundleDir src-tauri/target/${{ matrix.target }}/release/bundle/msi *>&1 | Tee-Object -FilePath merge.log
+        run: |
+          try {
+            ./scripts/merge-msi-languages.ps1 -BundleDir src-tauri/target/${{ matrix.target }}/release/bundle/msi *>&1 | Tee-Object -FilePath merge.log
+          } catch {
+            ($_ | Out-String) + $_.ScriptStackTrace | Add-Content merge.log
+            throw
+          }
       - name: Upload build artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:

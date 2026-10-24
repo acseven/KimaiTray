@@ -20,14 +20,19 @@ $msiOpenTransact = 1
 $msiViewModifyAssign = 3
 $pidTemplate = 7
 
+# PowerShell wraps COM objects in PSObject; COM rejects the wrapper with a
+# type mismatch, so pass the underlying objects.
+function Unwrap([object[]]$values) {
+  ,@($values | ForEach-Object { if ($_ -is [psobject]) { $_.psobject.BaseObject } else { $_ } })
+}
 function Invoke-Com($target, [string]$name, [object[]]$arguments = @()) {
-  $target.GetType().InvokeMember($name, "InvokeMethod", $null, $target, $arguments)
+  $target.GetType().InvokeMember($name, "InvokeMethod", $null, $target, (Unwrap $arguments))
 }
 function Get-ComProperty($target, [string]$name, [object[]]$arguments = @()) {
-  $target.GetType().InvokeMember($name, "GetProperty", $null, $target, $arguments)
+  $target.GetType().InvokeMember($name, "GetProperty", $null, $target, (Unwrap $arguments))
 }
 function Set-ComProperty($target, [string]$name, [object[]]$arguments) {
-  [void]$target.GetType().InvokeMember($name, "SetProperty", $null, $target, $arguments)
+  [void]$target.GetType().InvokeMember($name, "SetProperty", $null, $target, (Unwrap $arguments))
 }
 function Close-Com([ref]$reference) {
   if ($reference.Value) {
@@ -60,6 +65,7 @@ function Get-MsiProperty($database, [string]$property) {
   $value
 }
 
+$BundleDir = (Resolve-Path $BundleDir).Path
 $msis = @(Get-ChildItem -Path $BundleDir -Filter "*.msi" | Sort-Object Name)
 $base = $msis | Where-Object { $_.BaseName.EndsWith("_$BaseCulture") } | Select-Object -First 1
 if (-not $base) { throw "No $BaseCulture MSI found in $BundleDir" }
@@ -74,6 +80,8 @@ if (-not $OutputPath) {
 $work = Join-Path ([IO.Path]::GetTempPath()) ("msi-merge-" + [guid]::NewGuid())
 New-Item -ItemType Directory -Path $work | Out-Null
 Copy-Item $base.FullName $OutputPath -Force
+$OutputPath = (Resolve-Path $OutputPath).Path
+Write-Host "Base: $($base.Name); languages: $(($languages | ForEach-Object Name) -join ', ')"
 
 $baseDb = Open-Database $OutputPath $msiOpenReadOnly
 $productCode = Get-MsiProperty $baseDb "ProductCode"

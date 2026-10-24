@@ -25,6 +25,7 @@ jobs:
           node-version: "22"
           cache: npm
       - name: Install repository Rust toolchain and target
+        id: rust
         run: |
           rustup show active-toolchain
           rustup target add ${{ matrix.target }}
@@ -32,14 +33,18 @@ jobs:
         with:
           workspaces: src-tauri -> target
           key: ${{ matrix.target }}
-      - run: npm ci
+      - name: Install npm dependencies
+        id: npm
+        run: npm ci
       # No updater signing key in this fork, so skip updater artifacts.
       - name: Build installers
+        id: build
         shell: bash
         run: |
           set -o pipefail
           npm run tauri build -- --verbose --target ${{ matrix.target }} --config '{"bundle":{"createUpdaterArtifacts":false}}' 2>&1 | tee build.log
       - name: Merge localized MSIs into one multilingual MSI
+        id: merge
         shell: pwsh
         run: ./scripts/merge-msi-languages.ps1 -BundleDir src-tauri/target/${{ matrix.target }}/release/bundle/msi *>&1 | Tee-Object -FilePath merge.log
       - name: Upload build artifacts
@@ -69,8 +74,17 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          touch build.log merge.log
-          tail -c 900000 build.log > build-tail.log
-          gh release create "log-${GITHUB_SHA::7}-${{ matrix.target }}" --draft \
-            --title "Build log ${GITHUB_SHA::7} (${{ matrix.target }})" --notes "Failed test build." \
-            build-tail.log merge.log
+          {
+            echo "rust: ${{ steps.rust.outcome }}"
+            echo "npm: ${{ steps.npm.outcome }}"
+            echo "build: ${{ steps.build.outcome }}"
+            echo "merge: ${{ steps.merge.outcome }}"
+            ls -R src-tauri/target/${{ matrix.target }}/release/bundle 2>&1 | head -50
+          } > status.log
+          echo "== build log" > build-tail.log
+          [ -f build.log ] && tail -c 900000 build.log >> build-tail.log
+          echo "== merge log" > merge-tail.log
+          [ -f merge.log ] && cat merge.log >> merge-tail.log
+          tag="log-${GITHUB_SHA::7}-${{ matrix.target }}"
+          gh release create "$tag" --draft --title "Build log ${GITHUB_SHA::7} (${{ matrix.target }})" --notes "Failed test build."
+          for f in status.log build-tail.log merge-tail.log; do gh release upload "$tag" "$f" || true; done

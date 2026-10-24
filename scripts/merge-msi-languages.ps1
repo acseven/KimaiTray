@@ -18,6 +18,9 @@ $ErrorActionPreference = "Stop"
 $msiOpenReadOnly = 0
 $msiOpenTransact = 1
 $msiViewModifyAssign = 3
+# Language transforms legitimately switch the code page (e.g. to 1250 for
+# Czech); without this flag Windows Installer refuses to apply them.
+$msiTransformErrorChangeCodePage = 32
 $pidTemplate = 7
 
 # PowerShell wraps COM objects in PSObject; COM rejects the wrapper with a
@@ -99,7 +102,7 @@ foreach ($msi in $languages) {
   $lcid = Get-MsiProperty $languageDb "ProductLanguage"
   $transform = Join-Path $work "$lcid.mst"
   [void](Invoke-Com $languageDb "GenerateTransform" @($baseDb, $transform))
-  [void](Invoke-Com $languageDb "CreateTransformSummaryInfo" @($baseDb, $transform, 0, 0))
+  [void](Invoke-Com $languageDb "CreateTransformSummaryInfo" @($baseDb, $transform, $msiTransformErrorChangeCodePage, 0))
   Close-Com ([ref]$languageDb)
   $transforms += [pscustomobject]@{ Lcid = $lcid; Path = $transform; Source = $msi.Name }
   Write-Host ("{0} -> transform {1} ({2:N0} KB)" -f $msi.Name, $lcid, ((Get-Item $transform).Length / 1KB))
@@ -135,7 +138,11 @@ foreach ($transform in $transforms) {
   $check = Join-Path $work "check-$($transform.Lcid).msi"
   Copy-Item $OutputPath $check
   $checkDb = Open-Database $check $msiOpenTransact
-  [void](Invoke-Com $checkDb "ApplyTransform" @($transform.Path, 0))
+  try {
+    [void](Invoke-Com $checkDb "ApplyTransform" @($transform.Path, $msiTransformErrorChangeCodePage))
+  } catch {
+    throw "Transform $($transform.Lcid) from $($transform.Source) cannot be applied: $($_.Exception.InnerException.Message)"
+  }
   $language = Get-MsiProperty $checkDb "ProductLanguage"
   $code = Get-MsiProperty $checkDb "ProductCode"
   Close-Com ([ref]$checkDb)

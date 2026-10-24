@@ -213,7 +213,7 @@ export function SettingsRowStacked({
   children,
 }: {
   label: string;
-  description?: string;
+  description?: ReactNode;
   children: ReactNode;
 }) {
   return (

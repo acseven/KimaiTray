@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { logger } from "../utils/logger";
 import { checkForUpdate, installUpdate } from "../api/updater";
+import { loadManagedPolicy } from "../settings/policy";
 
 interface UpdaterState {
   available: boolean;
@@ -60,6 +61,11 @@ export function useUpdater(autoUpdate = true): UpdaterState {
       };
 
       try {
+        // Updates rolled out by the organization: never contact the server.
+        if ((await loadManagedPolicy()).disableUpdates) {
+          setState((s) => ({ ...s, checking: false }));
+          return;
+        }
         const update = await checkForUpdate();
 
         if (update) {

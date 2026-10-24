@@ -262,13 +262,37 @@ Notes for managed installations:
   Windows Credential Manager. Each user connects once using the guided token
   flow above.
 - Updating a machine-wide installation requires administrator rights, so
-  standard users see a UAC prompt for in-app updates. Disable **automatic
-  updates** in Settings and roll out new versions centrally instead.
+  standard users see a UAC prompt for in-app updates. Set the **Turn off
+  automatic updates** policy and roll out new versions centrally instead.
 - The installers download the WebView2 runtime when it is missing (Windows 11
   includes it). For offline or proxied machines, deploy the WebView2 Evergreen
   runtime beforehand.
 - **Launch at login** is a per-user setting stored under
   `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`.
+
+### Group Policy
+
+Administrative templates are in [`deploy/gpo`](deploy/gpo): copy
+`KimaiTray.admx` to `PolicyDefinitions` and the `en-US` / `pt-PT` folders
+next to it (the local `C:\Windows\PolicyDefinitions` or the domain's
+Central Store). The policies appear under **Administrative Templates →
+KimaiTray** in both Computer and User Configuration; a computer policy wins
+over a user policy. Enforced settings are locked in KimaiTray and marked
+**Managed by your organization**.
+
+| Policy | Registry value (`Software\Policies\KimaiTray`) | Effect |
+|--------|------------------|--------|
+| Kimai server URL | `KimaiUrl` (REG_SZ), `KimaiUrlLocked` (REG_DWORD 0/1) | Prefills the server URL for new connections; when locked, every connection uses it |
+| Application language | `Language` (REG_SZ: `system`, `en`, `pt`, `de`, `cs`, `sk`, `uk`) | Fixes the interface language |
+| Launch KimaiTray at sign-in | `LaunchAtLogin` (REG_DWORD 0/1) | Forces autostart on or off, applied when KimaiTray starts |
+| Server refresh interval | `RefreshInterval` (REG_DWORD: 15, 30, 60, 120, 300, 600) | Fixes how often data is synchronized |
+| Turn off automatic updates | `DisableUpdates` (REG_DWORD 1) | No update checks, downloads or update controls |
+| Idle detection | `EnableIdleDetection` (REG_DWORD 0/1), `IdleThresholdMinutes` (1–60), `IdleAction` (`ask`, `stop`, `discard`, `continue`) | Forces idle detection and its options |
+| Reminder when no timer is running | `EnableNoTimerReminder` (REG_DWORD 0/1), `NoTimerReminderMinutes` (1–1440) | Forces the full-screen reminder and its delay |
+
+Policies are read when KimaiTray starts. Invalid values are ignored. API
+tokens are personal and cannot be set by policy; users create them with the
+guided token flow.
 
 ## Building for Production
 

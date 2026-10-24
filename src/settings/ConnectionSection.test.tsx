@@ -7,6 +7,7 @@ import { I18nextProvider } from "react-i18next";
 import i18n, { initPromise } from "../shared/i18n";
 import { defaultSettings } from "./service";
 import ConnectionSection from "./ConnectionSection";
+import { resetManagedPolicyForTests } from "./policy";
 
 const apiMocks = vi.hoisted(() => ({
   getConnectionToken: vi.fn(),
@@ -39,6 +40,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  resetManagedPolicyForTests();
   vi.restoreAllMocks();
 });
 
@@ -364,5 +366,54 @@ describe("connection internal ID", () => {
     await user.click(screen.getByRole("button", { name: "Show internal ID" }));
     await user.click(screen.getByRole("button", { name: "Copy ID" }));
     expect(screen.getByRole("button", { name: "Copy ID" })).toBeTruthy();
+  });
+});
+
+describe("connection managed by policy", () => {
+  function renderNew(saveConnection = vi.fn().mockResolvedValue(undefined)) {
+    render(
+      <I18nextProvider i18n={i18n}>
+        <ConnectionSection
+          settings={defaultSettings}
+          token=""
+          selectedConnectionId={null}
+          onSelectedConnectionChange={vi.fn()}
+          saveConnection={saveConnection}
+          removeConnection={vi.fn()}
+          update={vi.fn()}
+        />
+      </I18nextProvider>,
+    );
+    return saveConnection;
+  }
+
+  it("prefills the managed server URL but keeps it editable", async () => {
+    resetManagedPolicyForTests({ kimaiUrl: "https://kimai.corp.test" });
+    renderNew();
+    const urlInput = document.querySelectorAll("input")[1] as HTMLInputElement;
+    await waitFor(() => expect(urlInput.value).toBe("https://kimai.corp.test"));
+    expect(urlInput.disabled).toBe(false);
+    expect(screen.queryByText("Managed by your organization")).toBeNull();
+  });
+
+  it("locks every connection to the managed server URL", async () => {
+    resetManagedPolicyForTests({ kimaiUrl: "https://kimai.corp.test", kimaiUrlLocked: true });
+    vi.spyOn(crypto, "randomUUID").mockReturnValue("00000000-0000-4000-8000-000000000002");
+    const user = userEvent.setup();
+    const saveConnection = renderNew();
+    const inputs = document.querySelectorAll("input");
+    await waitFor(() => expect((inputs[1] as HTMLInputElement).disabled).toBe(true));
+    expect((inputs[1] as HTMLInputElement).value).toBe("https://kimai.corp.test");
+    expect(screen.getByText("Managed by your organization")).toBeTruthy();
+
+    await user.type(inputs[2], "token");
+    await user.click(screen.getByRole("button", { name: "Test & Save" }));
+    await waitFor(() =>
+      expect(saveConnection).toHaveBeenCalledWith(
+        { id: "00000000-0000-4000-8000-000000000002", name: "kimai.corp.test", url: "https://kimai.corp.test" },
+        "token",
+      ),
+    );
+    expect(apiMocks.testConnection).toHaveBeenCalledWith("https://kimai.corp.test", "token");
   });
 });

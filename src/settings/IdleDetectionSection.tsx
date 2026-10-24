@@ -7,6 +7,8 @@ import { logger } from "../utils/logger";
 import { usePlatform } from "../platform";
 import { NumberInput, Select, Toggle } from "./Controls";
 import { SettingsList, SettingsPage, SettingsRow } from "./SettingsLayout";
+import { useManagedPolicy, withManagedNote } from "./ManagedPolicy";
+import { managedSettingKeys } from "./policy";
 
 interface Props {
   settings: AppSettings;
@@ -16,6 +18,7 @@ interface Props {
 export default function IdleDetectionSection({ settings, update }: Props) {
   const { t } = useTranslation();
   const { os } = usePlatform();
+  const managed = managedSettingKeys(useManagedPolicy());
   const [testing, setTesting] = useState(false);
 
   const testIdleReminder = async () => {
@@ -44,21 +47,28 @@ export default function IdleDetectionSection({ settings, update }: Props) {
   return (
     <SettingsPage title={t("idle.title")} description={t("idle.description")}>
       <SettingsList>
-        <SettingsRow label={t("idle.enableIdle")} description={t("idle.enableIdleDescription")}>
+        <SettingsRow
+          label={t("idle.enableIdle")}
+          description={withManagedNote(t("idle.enableIdleDescription"), managed.has("enableIdleDetection"))}
+        >
           <Toggle
             checked={settings.enableIdleDetection}
             onChange={(v) => update("enableIdleDetection", v)}
+            disabled={managed.has("enableIdleDetection")}
           />
         </SettingsRow>
 
-        <SettingsRow label={t("idle.idleThreshold")} description={t("idle.idleThresholdDescription")}>
+        <SettingsRow
+          label={t("idle.idleThreshold")}
+          description={withManagedNote(t("idle.idleThresholdDescription"), managed.has("idleThresholdMinutes"))}
+        >
           <NumberInput
             value={settings.idleThresholdMinutes}
             onChange={(v) => update("idleThresholdMinutes", v)}
             min={1}
             max={60}
             suffix="min"
-            disabled={!settings.enableIdleDetection}
+            disabled={!settings.enableIdleDetection || managed.has("idleThresholdMinutes")}
           />
         </SettingsRow>
 
@@ -72,7 +82,10 @@ export default function IdleDetectionSection({ settings, update }: Props) {
           />
         </SettingsRow>
 
-        <SettingsRow label={t("idle.whenIdle")} description={t("idle.whenIdleDescription")}>
+        <SettingsRow
+          label={t("idle.whenIdle")}
+          description={withManagedNote(t("idle.whenIdleDescription"), managed.has("idleAction"))}
+        >
           <Select
             value={settings.idleAction}
             onChange={(v) => update("idleAction", v as AppSettings["idleAction"])}
@@ -82,7 +95,7 @@ export default function IdleDetectionSection({ settings, update }: Props) {
               { value: "discard", label: t("idle.discardIdleTime") },
               { value: "continue", label: t("idle.keepRunning") },
             ]}
-            disabled={!settings.enableIdleDetection}
+            disabled={!settings.enableIdleDetection || managed.has("idleAction")}
           />
         </SettingsRow>
 

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" revision="1.0" schemaVersion="1.0" xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+  <policyNamespaces>
+    <target prefix="kimaitray" namespace="KimaiTray.Policies.KimaiTray" />
+  </policyNamespaces>
+  <resources minRequiredRevision="1.0" />
+  <supportedOn>
+    <definitions>
+      <definition name="SUPPORTED_KimaiTray" displayName="$(string.SUPPORTED_KimaiTray)" />
+    </definitions>
+  </supportedOn>
+  <categories>
+    <category name="KimaiTray" displayName="$(string.KimaiTray)" />
+  </categories>
+  <policies>
+    <policy name="KimaiServer" class="Both" displayName="$(string.KimaiServer)" explainText="$(string.KimaiServer_Help)" presentation="$(presentation.KimaiServer)" key="Software\Policies\KimaiTray">
+      <parentCategory ref="KimaiTray" />
+      <supportedOn ref="SUPPORTED_KimaiTray" />
+      <elements>
+        <text id="KimaiUrl" valueName="KimaiUrl" required="true" maxLength="4096" />
+        <boolean id="KimaiUrlLocked" valueName="KimaiUrlLocked">
+          <trueValue><decimal value="1" /></trueValue>
+          <falseValue><decimal value="0" /></falseValue>
+        </boolean>
+      </elements>
+    </policy>
+    <policy name="Language" class="Both" displayName="$(string.Language)" explainText="$(string.Language_Help)" presentation="$(presentation.Language)" key="Software\Policies\KimaiTray">
+      <parentCategory ref="KimaiTray" />
+      <supportedOn ref="SUPPORTED_KimaiTray" />
+      <elements>
+        <enum id="Language" valueName="Language" required="true">
+          <item displayName="$(string.Language_System)"><value><string>system</string></value></item>
+          <item displayName="$(string.Language_En)"><value><string>en</string></value></item>
+          <item displayName="$(string.Language_Pt)"><value><string>pt</string></value></item>
+          <item displayName="$(string.Language_De)"><value><string>de</string></value></item>
+          <item displayName="$(string.Language_Cs)"><value><string>cs</string></value></item>
+          <item displayName="$(string.Language_Sk)"><value><string>sk</string></value></item>
+          <item displayName="$(string.Language_Uk)"><value><string>uk</string></value></item>
+        </enum>
+      </elements>
+    </policy>
+    <policy name="LaunchAtLogin" class="Both" displayName="$(string.LaunchAtLogin)" explainText="$(string.LaunchAtLogin_Help)" key="Software\Policies\KimaiTray" valueName="LaunchAtLogin">
+      <parentCategory ref="KimaiTray" />
+      <supportedOn ref="SUPPORTED_KimaiTray" />
+      <enabledValue><decimal value="1" /></enabledValue>
+      <disabledValue><decimal value="0" /></disabledValue>
+    </policy>
+    <policy name="RefreshInterval" class="Both" displayName="$(string.RefreshInterval)" explainText="$(string.RefreshInterval_Help)" presentation="$(presentation.RefreshInterval)" key="Software\Policies\KimaiTray">
+      <parentCategory ref="KimaiTray" />
+      <supportedOn ref="SUPPORTED_KimaiTray" />
+      <elements>
+        <enum id="RefreshInterval" valueName="RefreshInterval" required="true">
+          <item displayName="$(string.Refresh_15)"><value><decimal value="15" /></value></item>
+          <item displayName="$(string.Refresh_30)"><value><decimal value="30" /></value></item>
+          <item displayName="$(string.Refresh_60)"><value><decimal value="60" /></value></item>
+          <item displayName="$(string.Refresh_120)"><value><decimal value="120" /></value></item>
+          <item displayName="$(string.Refresh_300)"><value><decimal value="300" /></value></item>
+          <item displayName="$(string.Refresh_600)"><value><decimal value="600" /></value></item>
+        </enum>
+      </elements>
+    </policy>
+    <policy name="DisableUpdates" class="Both" displayName="$(string.DisableUpdates)" explainText="$(string.DisableUpdates_Help)" key="Software\Policies\KimaiTray" valueName="DisableUpdates">
+      <parentCategory ref="KimaiTray" />
+      <supportedOn ref="SUPPORTED_KimaiTray" />
+      <enabledValue><decimal value="1" /></enabledValue>
+      <disabledValue><decimal value="0" /></disabledValue>
+    </policy>
+    <policy name="IdleDetection" class="Both" displayName="$(string.IdleDetection)" explainText="$(string.IdleDetection_Help)" presentation="$(presentation.IdleDetection)" key="Software\Policies\KimaiTray" valueName="EnableIdleDetection">
+      <parentCategory ref="KimaiTray" />
+      <supportedOn ref="SUPPORTED_KimaiTray" />
+      <enabledValue><decimal value="1" /></enabledValue>
+      <disabledValue><decimal value="0" /></disabledValue>
+      <elements>
+        <decimal id="IdleThresholdMinutes" valueName="IdleThresholdMinutes" minValue="1" maxValue="60" />
+        <enum id="IdleAction" valueName="IdleAction">
+          <item displayName="$(string.IdleAction_Ask)"><value><string>ask</string></value></item>
+          <item displayName="$(string.IdleAction_Stop)"><value><string>stop</string></value></item>
+          <item displayName="$(string.IdleAction_Discard)"><value><string>discard</string></value></item>
+          <item displayName="$(string.IdleAction_Continue)"><value><string>continue</string></value></item>
+        </enum>
+      </elements>
+    </policy>
+    <policy name="NoTimerReminder" class="Both" displayName="$(string.NoTimerReminder)" explainText="$(string.NoTimerReminder_Help)" presentation="$(presentation.NoTimerReminder)" key="Software\Policies\KimaiTray" valueName="EnableNoTimerReminder">
+      <parentCategory ref="KimaiTray" />
+      <supportedOn ref="SUPPORTED_KimaiTray" />
+      <enabledValue><decimal value="1" /></enabledValue>
+      <disabledValue><decimal value="0" /></disabledValue>
+      <elements>
+        <decimal id="NoTimerReminderMinutes" valueName="NoTimerReminderMinutes" minValue="1" maxValue="1440" />
+      </elements>
+    </policy>
+  </policies>
+</policyDefinitions>

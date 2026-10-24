@@ -764,5 +764,8 @@
     "retry": "Tentar novamente…",
     "retryWarning": "Tente novamente apenas se este tempo estiver em falta no issue. Repetir um registo existente adiciona o tempo duas vezes.",
     "confirmRetry": "O tempo está em falta — tentar novamente"
+  },
+  "policy": {
+    "managed": "Gerido pela sua organização"
   }
 }

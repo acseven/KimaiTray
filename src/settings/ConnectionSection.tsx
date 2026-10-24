@@ -7,6 +7,7 @@ import IntegrationsSection from "./IntegrationsSection";
 import FeaturesSection from "./FeaturesSection";
 import PluginsSection from "./PluginsSection";
 import ApiTokenGuide from "./ApiTokenGuide";
+import { useManagedPolicy, withManagedNote } from "./ManagedPolicy";
 import { TextInput } from "./Controls";
 import {
   SettingsList,
@@ -53,6 +54,10 @@ export default function ConnectionSection({
   >("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const formLoadRequestsRef = useRef(new LatestRequest());
+  const policy = useManagedPolicy();
+  // A locked server URL applies to every connection the user saves.
+  const lockedUrl = policy.kimaiUrlLocked ? policy.kimaiUrl : undefined;
+  const effectiveUrl = lockedUrl ?? url;
 
   const loadFormForConnection = useCallback(
     async (id: string | null) => {
@@ -107,6 +112,12 @@ export default function ConnectionSection({
   ]);
 
   useEffect(() => {
+    if (policy.kimaiUrl && !editingId) {
+      setUrl((current) => current || policy.kimaiUrl!);
+    }
+  }, [policy.kimaiUrl, editingId]);
+
+  useEffect(() => {
     if (
       editingId === settings.activeConnectionId &&
       token &&
@@ -116,7 +127,7 @@ export default function ConnectionSection({
     }
   }, [token, editingId, settings.activeConnectionId, editToken]);
 
-  const insecure = url.length > 0 && isInsecureUrl(url);
+  const insecure = effectiveUrl.length > 0 && isInsecureUrl(effectiveUrl);
   const editingConn = editingId
     ? settings.connections.find((c) => c.id === editingId)
     : undefined;
@@ -137,7 +148,7 @@ export default function ConnectionSection({
 
     let result: ConnectionResult;
     try {
-      result = await testConnection(url, editToken);
+      result = await testConnection(effectiveUrl, editToken);
     } catch {
       setStatus("error");
       setStatusMessage(t("connection.unexpectedError"));
@@ -148,15 +159,15 @@ export default function ConnectionSection({
       let connName = name;
       if (!connName) {
         try {
-          connName = new URL(url).hostname;
+          connName = new URL(effectiveUrl).hostname;
         } catch {
-          connName = url;
+          connName = effectiveUrl;
         }
       }
       const id = editingId || crypto.randomUUID();
 
       try {
-        await saveConnection({ id, name: connName, url }, editToken);
+        await saveConnection({ id, name: connName, url: effectiveUrl }, editToken);
       } catch {
         setStatus("error");
         setStatusMessage(t("connection.unexpectedError"));
@@ -188,7 +199,7 @@ export default function ConnectionSection({
       setStatusMessage(result.error ?? t("connection.connectionFailed"));
     }
   }, [
-    url,
+    effectiveUrl,
     editToken,
     name,
     editingId,
@@ -386,13 +397,14 @@ export default function ConnectionSection({
 
             <SettingsRowStacked
               label={t("connection.baseUrl")}
-              description={t("connection.baseUrlDescription")}
+              description={withManagedNote(t("connection.baseUrlDescription"), !!lockedUrl)}
             >
               <TextInput
                 type="url"
-                value={url}
+                value={effectiveUrl}
                 onChange={setUrl}
                 placeholder={t("connection.baseUrlPlaceholder")}
+                disabled={!!lockedUrl}
               />
             </SettingsRowStacked>
 
@@ -420,7 +432,7 @@ export default function ConnectionSection({
                 </button>
               </div>
               <ApiTokenGuide
-                url={url}
+                url={effectiveUrl}
                 defaultOpen={settings.connections.length === 0}
               />
             </SettingsRowStacked>
@@ -431,7 +443,7 @@ export default function ConnectionSection({
             <button
               type="button"
               onClick={handleTestAndSave}
-              disabled={status === "testing" || !url || !editToken}
+              disabled={status === "testing" || !effectiveUrl || !editToken}
               className="rounded-md bg-[var(--accent)] px-3.5 py-1.5 text-[12px] font-medium text-white
                 hover:bg-[var(--accent-hover)] active:opacity-80
                 disabled:opacity-50 disabled:cursor-not-allowed

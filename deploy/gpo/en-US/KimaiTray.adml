@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitionResources xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" revision="1.0" schemaVersion="1.0" xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+  <displayName>KimaiTray</displayName>
+  <description>Group Policy settings for KimaiTray</description>
+  <resources>
+    <stringTable>
+      <string id="KimaiTray">KimaiTray</string>
+      <string id="SUPPORTED_KimaiTray">KimaiTray with Group Policy support</string>
+
+      <string id="KimaiServer">Kimai server URL</string>
+      <string id="KimaiServer_Help">Sets the Kimai server that KimaiTray connects to.
+
+If you enable this policy, the URL is filled in when a user adds a connection, so users only need to create and paste their personal API token. When "Users can only connect to this server" is checked, the URL cannot be changed and every connection uses it.
+
+If you disable or do not configure this policy, users enter the server URL themselves.
+
+API tokens are personal and are never set by policy; each user creates one in their Kimai profile.</string>
+
+      <string id="Language">Application language</string>
+      <string id="Language_Help">Sets the KimaiTray interface language. Users cannot change it.
+
+If you disable or do not configure this policy, users choose the language.</string>
+      <string id="Language_System">Windows display language</string>
+      <string id="Language_En">English</string>
+      <string id="Language_Pt">Português (Portugal)</string>
+      <string id="Language_De">Deutsch</string>
+      <string id="Language_Cs">Čeština</string>
+      <string id="Language_Sk">Slovenčina</string>
+      <string id="Language_Uk">Українська</string>
+
+      <string id="LaunchAtLogin">Launch KimaiTray at sign-in</string>
+      <string id="LaunchAtLogin_Help">If you enable this policy, KimaiTray starts automatically when the user signs in. If you disable it, KimaiTray does not start automatically. Either way, users cannot change the setting.
+
+The setting is applied the next time KimaiTray starts, so the application must have been started once for each user.
+
+If you do not configure this policy, users decide.</string>
+
+      <string id="RefreshInterval">Server refresh interval</string>
+      <string id="RefreshInterval_Help">Sets how often KimaiTray synchronizes data with the Kimai server. Users cannot change it.
+
+If you disable or do not configure this policy, users choose the interval.</string>
+      <string id="Refresh_15">15 seconds</string>
+      <string id="Refresh_30">30 seconds</string>
+      <string id="Refresh_60">1 minute</string>
+      <string id="Refresh_120">2 minutes</string>
+      <string id="Refresh_300">5 minutes</string>
+      <string id="Refresh_600">10 minutes</string>
+
+      <string id="DisableUpdates">Turn off automatic updates</string>
+      <string id="DisableUpdates_Help">If you enable this policy, KimaiTray never checks for, downloads or installs updates, and the update controls are hidden. Use this when you deploy new versions yourself, for example with an MSI through Group Policy.
+
+If you disable or do not configure this policy, KimaiTray checks for updates and users control automatic installation.</string>
+
+      <string id="IdleDetection">Idle detection</string>
+      <string id="IdleDetection_Help">Controls detection of user inactivity while a timer is running.
+
+If you enable this policy, idle detection is turned on with the idle threshold you set. If you also select what happens when idle time is detected, users cannot change it; otherwise users choose.
+
+If you disable this policy, idle detection is turned off and users cannot turn it on.
+
+If you do not configure this policy, users decide.</string>
+      <string id="IdleAction_Ask">Ask the user</string>
+      <string id="IdleAction_Stop">Stop the timer</string>
+      <string id="IdleAction_Discard">Discard the idle time</string>
+      <string id="IdleAction_Continue">Keep the timer running</string>
+
+      <string id="NoTimerReminder">Reminder when no timer is running</string>
+      <string id="NoTimerReminder_Help">Controls the full-screen reminder shown when no time is being tracked.
+
+If you enable this policy, the reminder is turned on; you can also set after how many minutes without a running timer it appears.
+
+If you disable this policy, the reminder is turned off and users cannot turn it on.
+
+If you do not configure this policy, users decide.</string>
+    </stringTable>
+    <presentationTable>
+      <presentation id="KimaiServer">
+        <textBox refId="KimaiUrl">
+          <label>Kimai URL (for example https://kimai.example.com):</label>
+        </textBox>
+        <checkBox refId="KimaiUrlLocked" defaultChecked="false">Users can only connect to this server</checkBox>
+      </presentation>
+      <presentation id="Language">
+        <dropdownList refId="Language" noSort="true" defaultItem="0">Language:</dropdownList>
+      </presentation>
+      <presentation id="RefreshInterval">
+        <dropdownList refId="RefreshInterval" noSort="true" defaultItem="2">Refresh every:</dropdownList>
+      </presentation>
+      <presentation id="IdleDetection">
+        <decimalTextBox refId="IdleThresholdMinutes" defaultValue="5">Idle after (minutes, 1–60):</decimalTextBox>
+        <dropdownList refId="IdleAction" noSort="true">When idle time is detected:</dropdownList>
+      </presentation>
+      <presentation id="NoTimerReminder">
+        <decimalTextBox refId="NoTimerReminderMinutes" defaultValue="15">Remind after (minutes without a timer, 1–1440):</decimalTextBox>
+      </presentation>
+    </presentationTable>
+  </resources>
+</policyDefinitionResources>

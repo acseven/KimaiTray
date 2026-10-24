@@ -20,6 +20,7 @@ vi.mock("../utils/logger", () => ({
 }));
 
 import { useUpdater } from "./useUpdater";
+import { resetManagedPolicyForTests } from "../settings/policy";
 
 const update = { version: "2.0.0", body: "New features" };
 
@@ -28,6 +29,17 @@ describe("application updater state", () => {
     vi.resetAllMocks();
     mocks.checkForUpdate.mockResolvedValue(null);
     mocks.installUpdate.mockResolvedValue(undefined);
+    resetManagedPolicyForTests();
+  });
+
+  it("never checks for updates when they are disabled by policy", async () => {
+    resetManagedPolicyForTests({ disableUpdates: true });
+    const { result } = renderHook(() => useUpdater(true));
+
+    await waitFor(() => expect(result.current.checking).toBe(false));
+    expect(mocks.checkForUpdate).not.toHaveBeenCalled();
+    expect(result.current.available).toBe(false);
+    expect(result.current.error).toBeNull();
   });
 
   it("marks the app up to date when no update exists", async () => {

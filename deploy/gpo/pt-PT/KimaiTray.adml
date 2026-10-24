@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitionResources xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" revision="1.0" schemaVersion="1.0" xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+  <displayName>KimaiTray</displayName>
+  <description>Definições de Política de Grupo para o KimaiTray</description>
+  <resources>
+    <stringTable>
+      <string id="KimaiTray">KimaiTray</string>
+      <string id="SUPPORTED_KimaiTray">KimaiTray com suporte de Política de Grupo</string>
+
+      <string id="KimaiServer">URL do servidor Kimai</string>
+      <string id="KimaiServer_Help">Define o servidor Kimai a que o KimaiTray se liga.
+
+Se ativar esta política, o URL é preenchido quando o utilizador adiciona uma ligação, pelo que o utilizador só tem de criar e colar o seu token de API pessoal. Se a opção "Os utilizadores só podem ligar-se a este servidor" estiver selecionada, o URL não pode ser alterado e todas as ligações o utilizam.
+
+Se desativar ou não configurar esta política, os utilizadores introduzem o URL do servidor.
+
+Os tokens de API são pessoais e nunca são definidos por política; cada utilizador cria o seu no perfil do Kimai.</string>
+
+      <string id="Language">Idioma da aplicação</string>
+      <string id="Language_Help">Define o idioma da interface do KimaiTray. Os utilizadores não o podem alterar.
+
+Se desativar ou não configurar esta política, os utilizadores escolhem o idioma.</string>
+      <string id="Language_System">Idioma de apresentação do Windows</string>
+      <string id="Language_En">English</string>
+      <string id="Language_Pt">Português (Portugal)</string>
+      <string id="Language_De">Deutsch</string>
+      <string id="Language_Cs">Čeština</string>
+      <string id="Language_Sk">Slovenčina</string>
+      <string id="Language_Uk">Українська</string>
+
+      <string id="LaunchAtLogin">Iniciar o KimaiTray ao iniciar sessão</string>
+      <string id="LaunchAtLogin_Help">Se ativar esta política, o KimaiTray inicia automaticamente quando o utilizador inicia sessão. Se a desativar, o KimaiTray não inicia automaticamente. Em ambos os casos, os utilizadores não podem alterar a definição.
+
+A definição é aplicada da próxima vez que o KimaiTray for iniciado, pelo que a aplicação tem de ter sido iniciada uma vez por cada utilizador.
+
+Se não configurar esta política, os utilizadores decidem.</string>
+
+      <string id="RefreshInterval">Intervalo de atualização do servidor</string>
+      <string id="RefreshInterval_Help">Define com que frequência o KimaiTray sincroniza os dados com o servidor Kimai. Os utilizadores não o podem alterar.
+
+Se desativar ou não configurar esta política, os utilizadores escolhem o intervalo.</string>
+      <string id="Refresh_15">15 segundos</string>
+      <string id="Refresh_30">30 segundos</string>
+      <string id="Refresh_60">1 minuto</string>
+      <string id="Refresh_120">2 minutos</string>
+      <string id="Refresh_300">5 minutos</string>
+      <string id="Refresh_600">10 minutos</string>
+
+      <string id="DisableUpdates">Desativar atualizações automáticas</string>
+      <string id="DisableUpdates_Help">Se ativar esta política, o KimaiTray nunca procura, transfere nem instala atualizações, e os controlos de atualização ficam ocultos. Utilize-a quando distribui as novas versões, por exemplo com um MSI através de Política de Grupo.
+
+Se desativar ou não configurar esta política, o KimaiTray procura atualizações e os utilizadores controlam a instalação automática.</string>
+
+      <string id="IdleDetection">Deteção de inatividade</string>
+      <string id="IdleDetection_Help">Controla a deteção de inatividade do utilizador enquanto um temporizador está em curso.
+
+Se ativar esta política, a deteção de inatividade fica ligada com o limiar de inatividade que definir. Se também selecionar o que acontece quando é detetada inatividade, os utilizadores não o podem alterar; caso contrário, os utilizadores escolhem.
+
+Se desativar esta política, a deteção de inatividade fica desligada e os utilizadores não a podem ligar.
+
+Se não configurar esta política, os utilizadores decidem.</string>
+      <string id="IdleAction_Ask">Perguntar ao utilizador</string>
+      <string id="IdleAction_Stop">Parar o temporizador</string>
+      <string id="IdleAction_Discard">Descartar o tempo inativo</string>
+      <string id="IdleAction_Continue">Manter o temporizador em curso</string>
+
+      <string id="NoTimerReminder">Lembrete quando não há temporizador em curso</string>
+      <string id="NoTimerReminder_Help">Controla o lembrete em ecrã inteiro mostrado quando não está a ser registado tempo.
+
+Se ativar esta política, o lembrete fica ligado; pode também definir ao fim de quantos minutos sem temporizador em curso é apresentado.
+
+Se desativar esta política, o lembrete fica desligado e os utilizadores não o podem ligar.
+
+Se não configurar esta política, os utilizadores decidem.</string>
+    </stringTable>
+    <presentationTable>
+      <presentation id="KimaiServer">
+        <textBox refId="KimaiUrl">
+          <label>URL do Kimai (por exemplo, https://kimai.example.com):</label>
+        </textBox>
+        <checkBox refId="KimaiUrlLocked" defaultChecked="false">Os utilizadores só podem ligar-se a este servidor</checkBox>
+      </presentation>
+      <presentation id="Language">
+        <dropdownList refId="Language" noSort="true" defaultItem="0">Idioma:</dropdownList>
+      </presentation>
+      <presentation id="RefreshInterval">
+        <dropdownList refId="RefreshInterval" noSort="true" defaultItem="2">Atualizar a cada:</dropdownList>
+      </presentation>
+      <presentation id="IdleDetection">
+        <decimalTextBox refId="IdleThresholdMinutes" defaultValue="5">Inativo após (minutos, 1–60):</decimalTextBox>
+        <dropdownList refId="IdleAction" noSort="true">Quando for detetada inatividade:</dropdownList>
+      </presentation>
+      <presentation id="NoTimerReminder">
+        <decimalTextBox refId="NoTimerReminderMinutes" defaultValue="15">Lembrar após (minutos sem temporizador, 1–1440):</decimalTextBox>
+      </presentation>
+    </presentationTable>
+  </resources>
+</policyDefinitionResources>

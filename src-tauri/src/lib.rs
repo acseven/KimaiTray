@@ -3,6 +3,7 @@ mod idle;
 mod idle_stats;
 mod keychain;
 mod platform;
+mod policy;
 mod shortcuts;
 mod store;
 mod store_persistence;
@@ -201,6 +202,7 @@ pub fn run() {
             http::http_request,
             http::cancel_http_request,
             platform::get_platform_info,
+            policy::get_managed_policy,
             tray::ticker::set_tray_tooltip,
             tray::ticker::set_tray_title,
             tray::icons::set_tray_icon,
@@ -237,6 +239,7 @@ pub fn run() {
             );
             // Must run before tray/shortcuts read the store.
             migrate_legacy_data(app.handle());
+            policy::enforce_at_startup(app.handle());
             idle_stats::start(app.handle().clone());
             tray::create_tray(app.handle())?;
             info!("System tray created");

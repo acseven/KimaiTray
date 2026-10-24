@@ -764,5 +764,8 @@
     "retry": "Retry…",
     "retryWarning": "Retry only if this time is missing from the issue. Retrying an existing entry adds the time twice.",
     "confirmRetry": "Time is missing — retry"
+  },
+  "policy": {
+    "managed": "Managed by your organization"
   }
 }

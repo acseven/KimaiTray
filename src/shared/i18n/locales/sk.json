@@ -764,5 +764,8 @@
     "retry": "Zopakovať…",
     "retryWarning": "Zopakujte iba vtedy, ak tento čas v issue chýba. Opakovanie existujúceho zápisu započíta čas dvakrát.",
     "confirmRetry": "Čas chýba — zopakovať"
+  },
+  "policy": {
+    "managed": "Spravované vašou organizáciou"
   }
 }

@@ -6,6 +6,8 @@ import { checkForUpdate, installUpdate } from "../api/updater";
 import i18n from "../shared/i18n";
 import { resolveLanguage, type LanguageSetting } from "../shared/i18n";
 import { Select, Toggle } from "./Controls";
+import { useManagedPolicy, withManagedNote } from "./ManagedPolicy";
+import { managedSettingKeys } from "./policy";
 import {
   SettingsList,
   SettingsPage,
@@ -30,6 +32,8 @@ const LANGUAGE_OPTIONS: { value: string; label: string }[] = [
 
 export default function GeneralSection({ settings, update }: Props) {
   const { t } = useTranslation();
+  const policy = useManagedPolicy();
+  const managed = managedSettingKeys(policy);
   const [autostart, setAutostart] = useState(settings.launchAtLogin);
   const [checking, setChecking] = useState(false);
   const [updateResult, setUpdateResult] = useState<"upToDate" | "available" | "error" | null>(null);
@@ -90,22 +94,37 @@ export default function GeneralSection({ settings, update }: Props) {
   return (
     <SettingsPage title={t("general.title")} description={t("general.description")}>
       <SettingsList title={t("settingsGroups.preferences")}>
-        <SettingsRow label={t("settings.language")} description={t("settings.languageDescription")}>
+        <SettingsRow
+          label={t("settings.language")}
+          description={withManagedNote(t("settings.languageDescription"), managed.has("language"))}
+        >
           <Select
             value={settings.language}
             onChange={handleLanguageChange}
             options={languageOptions}
+            disabled={managed.has("language")}
           />
         </SettingsRow>
 
-        <SettingsRow label={t("general.launchAtLogin")} description={t("general.launchAtLoginDescription")}>
-          <Toggle checked={autostart} onChange={toggleAutostart} />
+        <SettingsRow
+          label={t("general.launchAtLogin")}
+          description={withManagedNote(t("general.launchAtLoginDescription"), managed.has("launchAtLogin"))}
+        >
+          <Toggle
+            checked={policy.launchAtLogin ?? autostart}
+            onChange={toggleAutostart}
+            disabled={managed.has("launchAtLogin")}
+          />
         </SettingsRow>
 
-        <SettingsRow label={t("general.refreshInterval")} description={t("general.refreshIntervalDescription")}>
+        <SettingsRow
+          label={t("general.refreshInterval")}
+          description={withManagedNote(t("general.refreshIntervalDescription"), managed.has("refreshInterval"))}
+        >
           <Select
             value={settings.refreshInterval}
             onChange={(v) => update("refreshInterval", Number(v))}
+            disabled={managed.has("refreshInterval")}
             options={[
               { value: 15, label: t("general.seconds_15") },
               { value: 30, label: t("general.seconds_30") },
@@ -128,14 +147,16 @@ export default function GeneralSection({ settings, update }: Props) {
       <SettingsList title={t("updateSettings.autoUpdate")}>
         <SettingsRow
           label={t("updateSettings.autoUpdate")}
-          description={t("updateSettings.autoUpdateDescription")}
+          description={withManagedNote(t("updateSettings.autoUpdateDescription"), managed.has("autoUpdate"))}
         >
           <Toggle
             checked={settings.autoUpdate}
             onChange={(v) => update("autoUpdate", v)}
+            disabled={managed.has("autoUpdate")}
           />
         </SettingsRow>
 
+        {!policy.disableUpdates && (
         <SettingsRowStacked label={t("updateSettings.checkForUpdates")}>
           <div className="flex items-center gap-3">
             <button
@@ -168,6 +189,7 @@ export default function GeneralSection({ settings, update }: Props) {
             )}
           </div>
         </SettingsRowStacked>
+        )}
       </SettingsList>
     </SettingsPage>
   );

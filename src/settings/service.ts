@@ -12,6 +12,7 @@ import type {
 } from "../types";
 import { DESCRIPTION_INPUT_TARGET } from "../plugins/customInputs";
 import { migrateLegacyStore } from "../api/storeMigrations";
+import { applyPolicy, getManagedPolicy, loadManagedPolicy } from "./policy";
 
 const STORE_PATH = "settings.json";
 const SETTINGS_KEY = "settings";
@@ -366,7 +367,12 @@ function normalizeIssueIntegrations(
   return normalized;
 }
 
+/** Normalizes stored settings and overlays values enforced by policy. */
 export function mergeSettings(raw?: Partial<AppSettings> | null): AppSettings {
+  return applyPolicy(normalizeSettings(raw), getManagedPolicy());
+}
+
+function normalizeSettings(raw?: Partial<AppSettings> | null): AppSettings {
   if (!raw) return {
     ...defaultSettings,
     trayColors: { ...defaultSettings.trayColors },
@@ -572,6 +578,7 @@ export function mergeSettings(raw?: Partial<AppSettings> | null): AppSettings {
 }
 
 export async function loadSettings(): Promise<AppSettings> {
+  await loadManagedPolicy();
   try {
     const store = await getStore();
     let raw = await store.get<AppSettings>(SETTINGS_KEY);

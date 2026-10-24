@@ -5,6 +5,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { AppSettings } from "../types";
 import { defaultFeatureSettings, defaultSettings } from "./service";
+import { resetManagedPolicyForTests } from "./policy";
 import GeneralSection from "./GeneralSection";
 import IdleDetectionSection from "./IdleDetectionSection";
 import TimerReminderSection from "./TimerReminderSection";
@@ -102,7 +103,10 @@ beforeEach(() => {
   mocks.openUrl.mockResolvedValue(undefined);
 });
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  resetManagedPolicyForTests();
+});
 
 describe("GeneralSection", () => {
   it("updates preferences, enables autostart and installs an available update", async () => {
@@ -420,5 +424,56 @@ describe("settings layout primitives", () => {
     expect(container.querySelector(".custom")).toBeTruthy();
     await user.click(screen.getByRole("button", { name: "pick" }));
     expect(onClick).toHaveBeenCalled();
+  });
+});
+
+describe("settings managed by policy", () => {
+  it("locks enforced general settings and hides update checks", async () => {
+    resetManagedPolicyForTests({
+      language: "pt",
+      launchAtLogin: true,
+      refreshInterval: 300,
+      disableUpdates: true,
+    });
+    render(<GeneralSection settings={settings({ autoUpdate: false })} update={vi.fn()} />);
+
+    await waitFor(() => expect(screen.getAllByText("policy.managed")).toHaveLength(4));
+    const [language, refresh] = screen.getAllByRole("combobox") as HTMLSelectElement[];
+    expect(language.disabled).toBe(true);
+    expect(refresh.disabled).toBe(true);
+    const [launch, , autoUpdate] = screen.getAllByRole("switch") as HTMLButtonElement[];
+    expect(launch.disabled).toBe(true);
+    expect(launch.getAttribute("aria-checked")).toBe("true");
+    expect(autoUpdate.disabled).toBe(true);
+    expect(screen.queryByText("updateSettings.checkForUpdates")).toBeNull();
+  });
+
+  it("locks enforced idle detection and reminder settings", async () => {
+    resetManagedPolicyForTests({
+      enableIdleDetection: true,
+      idleThresholdMinutes: 10,
+      idleAction: "stop",
+      enableNoTimerReminder: true,
+      noTimerReminderMinutes: 30,
+    });
+    render(
+      <IdleDetectionSection
+        settings={settings({ enableIdleDetection: true, idleThresholdMinutes: 10, idleAction: "stop" })}
+        update={vi.fn()}
+      />,
+    );
+    await waitFor(() => expect(screen.getAllByText("policy.managed")).toHaveLength(3));
+    expect((screen.getAllByRole("switch")[0] as HTMLButtonElement).disabled).toBe(true);
+    expect((screen.getByRole("combobox") as HTMLSelectElement).disabled).toBe(true);
+    cleanup();
+
+    render(
+      <TimerReminderSection
+        settings={settings({ enableNoTimerReminder: true, noTimerReminderMinutes: 30 })}
+        update={vi.fn()}
+      />,
+    );
+    await waitFor(() => expect(screen.getAllByText("policy.managed")).toHaveLength(2));
+    expect((screen.getByRole("switch") as HTMLButtonElement).disabled).toBe(true);
   });
 });

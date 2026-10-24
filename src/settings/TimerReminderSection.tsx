@@ -5,6 +5,8 @@ import { showFullscreenReminder } from "../api/reminderWindow";
 import { logger } from "../utils/logger";
 import { NumberInput, Toggle } from "./Controls";
 import { SettingsList, SettingsPage, SettingsRow } from "./SettingsLayout";
+import { useManagedPolicy, withManagedNote } from "./ManagedPolicy";
+import { managedSettingKeys } from "./policy";
 
 interface Props {
   settings: AppSettings;
@@ -14,6 +16,7 @@ interface Props {
 export default function TimerReminderSection({ settings, update }: Props) {
   const { t } = useTranslation();
   const [testing, setTesting] = useState(false);
+  const managed = managedSettingKeys(useManagedPolicy());
 
   const testReminder = async () => {
     setTesting(true);
@@ -34,17 +37,24 @@ export default function TimerReminderSection({ settings, update }: Props) {
       <SettingsList>
         <SettingsRow
           label={t("timerReminder.enable")}
-          description={t("timerReminder.enableDescription")}
+          description={withManagedNote(
+            t("timerReminder.enableDescription"),
+            managed.has("enableNoTimerReminder"),
+          )}
         >
           <Toggle
             checked={settings.enableNoTimerReminder}
             onChange={(value) => update("enableNoTimerReminder", value)}
+            disabled={managed.has("enableNoTimerReminder")}
           />
         </SettingsRow>
 
         <SettingsRow
           label={t("timerReminder.threshold")}
-          description={t("timerReminder.thresholdDescription")}
+          description={withManagedNote(
+            t("timerReminder.thresholdDescription"),
+            managed.has("noTimerReminderMinutes"),
+          )}
         >
           <NumberInput
             value={settings.noTimerReminderMinutes}
@@ -52,7 +62,7 @@ export default function TimerReminderSection({ settings, update }: Props) {
             min={1}
             max={1440}
             suffix="min"
-            disabled={!settings.enableNoTimerReminder}
+            disabled={!settings.enableNoTimerReminder || managed.has("noTimerReminderMinutes")}
           />
         </SettingsRow>
 

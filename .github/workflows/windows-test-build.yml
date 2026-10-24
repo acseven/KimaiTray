@@ -36,10 +36,12 @@ jobs:
       # No updater signing key in this fork, so skip updater artifacts.
       - name: Build installers
         shell: bash
-        run: npm run tauri build -- --target ${{ matrix.target }} --config '{"bundle":{"createUpdaterArtifacts":false}}'
+        run: |
+          set -o pipefail
+          npm run tauri build -- --verbose --target ${{ matrix.target }} --config '{"bundle":{"createUpdaterArtifacts":false}}' 2>&1 | tee build.log
       - name: Merge localized MSIs into one multilingual MSI
         shell: pwsh
-        run: ./scripts/merge-msi-languages.ps1 -BundleDir src-tauri/target/${{ matrix.target }}/release/bundle/msi
+        run: ./scripts/merge-msi-languages.ps1 -BundleDir src-tauri/target/${{ matrix.target }}/release/bundle/msi *>&1 | Tee-Object -FilePath merge.log
       - name: Upload build artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
@@ -60,3 +62,15 @@ jobs:
             --notes "Unsigned test build of $GITHUB_REF_NAME. Not for distribution." \
             src-tauri/target/${{ matrix.target }}/release/bundle/nsis/*.exe \
             src-tauri/target/${{ matrix.target }}/release/bundle/msi/merged/*.msi
+      # Job logs are not always reachable; keep them with a private draft.
+      - name: Publish failure logs
+        if: failure()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          touch build.log merge.log
+          tail -c 900000 build.log > build-tail.log
+          gh release create "log-${GITHUB_SHA::7}-${{ matrix.target }}" --draft \
+            --title "Build log ${GITHUB_SHA::7} (${{ matrix.target }})" --notes "Failed test build." \
+            build-tail.log merge.log

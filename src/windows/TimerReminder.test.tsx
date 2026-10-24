@@ -7,6 +7,7 @@ import i18n, { initPromise } from "../shared/i18n";
 import type { ReminderShowRequest } from "../api/reminderWindow";
 import {
   IDLE_REMINDER_ACTION_EVENT,
+  LONG_TIMER_ACTION_EVENT,
   REMINDER_RENDERED_EVENT,
   REMINDER_SHOW_EVENT,
 } from "../api/reminderWindow";
@@ -240,5 +241,60 @@ describe("timer reminder window", () => {
     expect(screen.getAllByRole("button").some((button) => !(button as HTMLButtonElement).disabled)).toBe(true);
     fireEvent.keyDown(document, { key: "ArrowDown" });
     expect(screen.getByRole("alertdialog")).toBeTruthy();
+  });
+
+  it("offers stop, hourly reminder and longer dismissals for a long-running timer", async () => {
+    render(<I18nextProvider i18n={i18n}><TimerReminder /></I18nextProvider>);
+    await waitFor(() => expect(receiveReminder).toBeDefined());
+    const show = () =>
+      act(() =>
+        receiveReminder?.({
+          payload: {
+            requestId: "long",
+            replyTo: "tray-popup",
+            payload: {
+              kind: "longTimer",
+              timesheetId: 42,
+              project: "Website",
+              activity: "Development",
+              beginIso: "2026-01-01T08:00:00Z",
+              runningSeconds: 13 * 3600 + 5 * 60,
+            },
+          },
+        }),
+      );
+
+    show();
+    expect(screen.getByText("Timer running for 13h 5m")).toBeTruthy();
+    expect(screen.getByText("Website")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Stop timer now" }));
+    await waitFor(() =>
+      expect(mocks.emitTo).toHaveBeenCalledWith("tray-popup", LONG_TIMER_ACTION_EVENT, { action: "stop", timesheetId: 42 }),
+    );
+    expect(mocks.hide).toHaveBeenCalled();
+
+    show();
+    fireEvent.click(screen.getByRole("button", { name: "Remind me in 1 hour" }));
+    show();
+    fireEvent.click(screen.getByRole("button", { name: "4 h" }));
+    show();
+    fireEvent.keyDown(document, { key: "Escape" });
+    await waitFor(() =>
+      expect(mocks.emitTo).toHaveBeenCalledWith("tray-popup", LONG_TIMER_ACTION_EVENT, { action: "snooze", timesheetId: 42, hours: 4 }),
+    );
+    expect(
+      mocks.emitTo.mock.calls.filter(
+        ([, event, payload]) => event === LONG_TIMER_ACTION_EVENT && payload.action === "dismissed",
+      ),
+    ).toHaveLength(2);
+
+    mocks.emitTo.mockImplementation(async (_target, event) => {
+      if (event === LONG_TIMER_ACTION_EVENT) throw new Error("popup closed");
+    });
+    show();
+    fireEvent.click(screen.getByRole("button", { name: "8 h" }));
+    await waitFor(() =>
+      expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining("popup closed")),
+    );
   });
 });

@@ -767,5 +767,18 @@
   },
   "policy": {
     "managed": "Von Ihrer Organisation verwaltet"
+  },
+  "longTimer": {
+    "enable": "Vor lange laufenden Timern warnen",
+    "enableDescription": "Eine Vollbildwarnung anzeigen, wenn ein Timer zu lange läuft, danach stündlich",
+    "threshold": "Warnen nach",
+    "thresholdDescription": "Stunden, die ein Timer vor der ersten Warnung laufen darf",
+    "title": "Timer läuft seit {{duration}}",
+    "description": "Gestartet {{time}}. Haben Sie vergessen, ihn zu stoppen?",
+    "stop": "Timer jetzt stoppen",
+    "remindInHour": "In 1 Stunde erinnern",
+    "dismissFor": "Ausblenden für",
+    "hours": "{{count}} h",
+    "escapeHint": "Esc drücken, um in 1 Stunde erneut erinnert zu werden"
   }
 }

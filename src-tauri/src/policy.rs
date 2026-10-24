@@ -29,6 +29,8 @@ const POLICY_VALUES: &[(&str, &str, Kind)] = &[
     ("IdleAction", "idleAction", Kind::Text),
     ("EnableNoTimerReminder", "enableNoTimerReminder", Kind::Number),
     ("NoTimerReminderMinutes", "noTimerReminderMinutes", Kind::Number),
+    ("EnableLongTimerWarning", "enableLongTimerWarning", Kind::Number),
+    ("LongTimerWarningHours", "longTimerWarningHours", Kind::Number),
 ];
 
 /// Machine values take precedence; user values only fill the gaps.

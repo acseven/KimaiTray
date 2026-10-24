@@ -73,6 +73,7 @@ Built with [Tauri 2](https://tauri.app/), React 19 and TypeScript.
 - Full-screen idle prompt and optional desktop notification
 - Independently configurable options to stop all running timers when the macOS screen saver starts or the Mac is locked, both disabled by default
 - Configurable full-screen reminder when no timer has been running
+- Full-screen warning when a timer has been running too long (12 hours by default), repeated every hour; stop the timer or dismiss it for 1, 2, 4 or 8 hours
 - Launch at login, configurable server refresh interval and one-click opening of Kimai
 - Automatic updates, manual update checks and a localized What's New screen after updates
 
@@ -289,6 +290,7 @@ over a user policy. Enforced settings are locked in KimaiTray and marked
 | Turn off automatic updates | `DisableUpdates` (REG_DWORD 1) | No update checks, downloads or update controls |
 | Idle detection | `EnableIdleDetection` (REG_DWORD 0/1), `IdleThresholdMinutes` (1–60), `IdleAction` (`ask`, `stop`, `discard`, `continue`) | Forces idle detection and its options |
 | Reminder when no timer is running | `EnableNoTimerReminder` (REG_DWORD 0/1), `NoTimerReminderMinutes` (1–1440) | Forces the full-screen reminder and its delay |
+| Warning for long-running timers | `EnableLongTimerWarning` (REG_DWORD 0/1), `LongTimerWarningHours` (1–72) | Forces the long-running timer warning and after how many hours it starts |
 
 Policies are read when KimaiTray starts. Invalid values are ignored. API
 tokens are personal and cannot be set by policy; users create them with the

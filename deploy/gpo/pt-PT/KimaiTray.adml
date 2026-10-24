@@ -72,6 +72,15 @@ Se ativar esta política, o lembrete fica ligado; pode também definir ao fim de
 Se desativar esta política, o lembrete fica desligado e os utilizadores não o podem ligar.
 
 Se não configurar esta política, os utilizadores decidem.</string>
+
+      <string id="LongTimerWarning">Aviso de temporizadores longos</string>
+      <string id="LongTimerWarning_Help">Controla o aviso em ecrã inteiro mostrado quando um temporizador está em curso há muito tempo, por exemplo porque o utilizador se esqueceu de o parar.
+
+Se ativar esta política, o aviso fica ligado e aparece após o número de horas que definir (12 por predefinição). Depois repete-se a cada hora; os utilizadores podem parar o temporizador ou ignorar o aviso durante 1, 2, 4 ou 8 horas.
+
+Se desativar esta política, o aviso fica desligado e os utilizadores não o podem ligar.
+
+Se não configurar esta política, o aviso está ligado por predefinição após 12 horas e os utilizadores decidem.</string>
     </stringTable>
     <presentationTable>
       <presentation id="KimaiServer">
@@ -92,6 +101,9 @@ Se não configurar esta política, os utilizadores decidem.</string>
       </presentation>
       <presentation id="NoTimerReminder">
         <decimalTextBox refId="NoTimerReminderMinutes" defaultValue="15">Lembrar após (minutos sem temporizador, 1–1440):</decimalTextBox>
+      </presentation>
+      <presentation id="LongTimerWarning">
+        <decimalTextBox refId="LongTimerWarningHours" defaultValue="12">Avisar após (horas, 1–72):</decimalTextBox>
       </presentation>
     </presentationTable>
   </resources>

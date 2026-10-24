@@ -43,6 +43,7 @@ import { useFavorites } from "../hooks/useFavorites";
 import { useKimaiTags } from "../hooks/useKimaiTags";
 import { useDeleteTimesheet } from "../hooks/useDeleteTimesheet";
 import { useNoTimerReminder } from "../hooks/useNoTimerReminder";
+import { useLongTimerWarning } from "../hooks/useLongTimerWarning";
 import { openKimaiInBrowser as openConfiguredKimai, setAlwaysOnTop } from "../api/trayApi";
 import { useAppearance } from "../hooks/useAppearance";
 import { invalidateTimesheets } from "../hooks/invalidateTimesheets";
@@ -180,6 +181,13 @@ export default function TrayPopup() {
     timers,
     activeLimit,
   );
+
+  useLongTimerWarning({
+    enabled: timerReminderSettings.longTimerEnabled,
+    thresholdHours: timerReminderSettings.longTimerHours,
+    timers,
+    stopTimer: stopActiveTimer,
+  });
 
   const activeKeys = useMemo(
     () => timers.map((running) =>

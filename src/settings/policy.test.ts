@@ -37,8 +37,12 @@ describe("normalizePolicy", () => {
         idleAction: "stop",
         enableNoTimerReminder: false,
         noTimerReminderMinutes: 30,
+        enableLongTimerWarning: 1,
+        longTimerWarningHours: 24,
       }),
     ).toEqual({
+      enableLongTimerWarning: true,
+      longTimerWarningHours: 24,
       kimaiUrl: "https://kimai.example.test",
       kimaiUrlLocked: true,
       language: "pt",
@@ -87,6 +91,8 @@ describe("applyPolicy", () => {
       idleAction: "discard",
       enableNoTimerReminder: 1,
       noTimerReminderMinutes: 45,
+      enableLongTimerWarning: 0,
+      longTimerWarningHours: 6,
       kimaiUrl: "https://kimai.example.test",
     });
     const settings = applyPolicy({ ...defaultSettings, theme: "dark" }, policy);
@@ -105,11 +111,13 @@ describe("applyPolicy", () => {
     expect([...managedSettingKeys(policy)].sort()).toEqual([
       "autoUpdate",
       "enableIdleDetection",
+      "enableLongTimerWarning",
       "enableNoTimerReminder",
       "idleAction",
       "idleThresholdMinutes",
       "language",
       "launchAtLogin",
+      "longTimerWarningHours",
       "noTimerReminderMinutes",
       "refreshInterval",
     ]);

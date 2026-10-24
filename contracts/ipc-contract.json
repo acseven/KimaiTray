@@ -23,6 +23,8 @@
     "stopTimerOnScreenLock",
     "enableNoTimerReminder",
     "noTimerReminderMinutes",
+    "enableLongTimerWarning",
+    "longTimerWarningHours",
     "theme",
     "uiSize",
     "popupWidth",

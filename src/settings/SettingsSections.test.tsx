@@ -212,17 +212,23 @@ describe("reminder sections", () => {
     const user = userEvent.setup();
     const update = vi.fn();
     const { unmount } = render(<TimerReminderSection settings={settings({ enableNoTimerReminder: true })} update={update} />);
-    await user.click(screen.getByRole("switch"));
-    fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "30" } });
+    await user.click(screen.getAllByRole("switch")[0]);
+    fireEvent.change(screen.getAllByRole("spinbutton")[0], { target: { value: "30" } });
+    await user.click(screen.getAllByRole("switch")[1]);
+    fireEvent.change(screen.getAllByRole("spinbutton")[1], { target: { value: "8" } });
     await user.click(screen.getByRole("button", { name: "timerReminder.testButton" }));
     expect(update).toHaveBeenCalledWith("enableNoTimerReminder", false);
     expect(update).toHaveBeenCalledWith("noTimerReminderMinutes", 30);
+    expect(update).toHaveBeenCalledWith("enableLongTimerWarning", false);
+    expect(update).toHaveBeenCalledWith("longTimerWarningHours", 8);
     await waitFor(() => expect(mocks.showFullscreenReminder).toHaveBeenCalledWith({ kind: "timer" }));
     unmount();
 
     mocks.showFullscreenReminder.mockRejectedValue(new Error("denied"));
-    render(<TimerReminderSection settings={settings()} update={vi.fn()} />);
-    expect((screen.getByRole("spinbutton") as HTMLInputElement).disabled).toBe(true);
+    render(<TimerReminderSection settings={settings({ enableLongTimerWarning: false })} update={vi.fn()} />);
+    for (const input of screen.getAllByRole("spinbutton") as HTMLInputElement[]) {
+      expect(input.disabled).toBe(true);
+    }
     await user.click(screen.getByRole("button", { name: "timerReminder.testButton" }));
     await waitFor(() => expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining("denied")));
   });
@@ -455,6 +461,8 @@ describe("settings managed by policy", () => {
       idleAction: "stop",
       enableNoTimerReminder: true,
       noTimerReminderMinutes: 30,
+      enableLongTimerWarning: true,
+      longTimerWarningHours: 10,
     });
     render(
       <IdleDetectionSection
@@ -473,7 +481,9 @@ describe("settings managed by policy", () => {
         update={vi.fn()}
       />,
     );
-    await waitFor(() => expect(screen.getAllByText("policy.managed")).toHaveLength(2));
-    expect((screen.getByRole("switch") as HTMLButtonElement).disabled).toBe(true);
+    await waitFor(() => expect(screen.getAllByText("policy.managed")).toHaveLength(4));
+    for (const toggle of screen.getAllByRole("switch") as HTMLButtonElement[]) {
+      expect(toggle.disabled).toBe(true);
+    }
   });
 });

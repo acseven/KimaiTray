@@ -19,6 +19,8 @@ export interface ManagedPolicy {
   idleAction?: AppSettings["idleAction"];
   enableNoTimerReminder?: boolean;
   noTimerReminderMinutes?: number;
+  enableLongTimerWarning?: boolean;
+  longTimerWarningHours?: number;
 }
 
 const LANGUAGES = ["sk", "en", "cs", "de", "uk", "pt", "system"] as const;
@@ -75,6 +77,8 @@ export function normalizePolicy(raw: unknown): ManagedPolicy {
     idleAction: oneOf(value.idleAction, IDLE_ACTIONS),
     enableNoTimerReminder: flag(value.enableNoTimerReminder),
     noTimerReminderMinutes: integer(value.noTimerReminderMinutes, 1, 1440),
+    enableLongTimerWarning: flag(value.enableLongTimerWarning),
+    longTimerWarningHours: integer(value.longTimerWarningHours, 1, 72),
   };
   const policy: ManagedPolicy = {};
   for (const [key, item] of Object.entries(candidate)) {
@@ -130,6 +134,12 @@ function policySettings(policy: ManagedPolicy): Partial<AppSettings> {
   }
   if (policy.noTimerReminderMinutes !== undefined) {
     settings.noTimerReminderMinutes = policy.noTimerReminderMinutes;
+  }
+  if (policy.enableLongTimerWarning !== undefined) {
+    settings.enableLongTimerWarning = policy.enableLongTimerWarning;
+  }
+  if (policy.longTimerWarningHours !== undefined) {
+    settings.longTimerWarningHours = policy.longTimerWarningHours;
   }
   return settings;
 }

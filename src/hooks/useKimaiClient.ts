@@ -33,6 +33,8 @@ interface IdleSettings {
 interface TimerReminderSettings {
   enabled: boolean;
   thresholdMinutes: number;
+  longTimerEnabled: boolean;
+  longTimerHours: number;
 }
 
 interface TraySettings {
@@ -92,6 +94,8 @@ const defaultIdleSettings: IdleSettings = {
 const defaultTimerReminderSettings: TimerReminderSettings = {
   enabled: false,
   thresholdMinutes: 15,
+  longTimerEnabled: true,
+  longTimerHours: 12,
 };
 
 const defaultTraySettings: TraySettings = {
@@ -204,6 +208,8 @@ export function useKimaiClient(): UseKimaiClientResult {
     setTimerReminderSettings({
       enabled: s.enableNoTimerReminder,
       thresholdMinutes: s.noTimerReminderMinutes,
+      longTimerEnabled: s.enableLongTimerWarning,
+      longTimerHours: s.longTimerWarningHours,
     });
     setTraySettings({
       showElapsedInTray: s.showElapsedInTray,

@@ -67,6 +67,37 @@ export default function TimerReminderSection({ settings, update }: Props) {
         </SettingsRow>
 
         <SettingsRow
+          label={t("longTimer.enable")}
+          description={withManagedNote(
+            t("longTimer.enableDescription"),
+            managed.has("enableLongTimerWarning"),
+          )}
+        >
+          <Toggle
+            checked={settings.enableLongTimerWarning}
+            onChange={(value) => update("enableLongTimerWarning", value)}
+            disabled={managed.has("enableLongTimerWarning")}
+          />
+        </SettingsRow>
+
+        <SettingsRow
+          label={t("longTimer.threshold")}
+          description={withManagedNote(
+            t("longTimer.thresholdDescription"),
+            managed.has("longTimerWarningHours"),
+          )}
+        >
+          <NumberInput
+            value={settings.longTimerWarningHours}
+            onChange={(value) => update("longTimerWarningHours", value)}
+            min={1}
+            max={72}
+            suffix="h"
+            disabled={!settings.enableLongTimerWarning || managed.has("longTimerWarningHours")}
+          />
+        </SettingsRow>
+
+        <SettingsRow
           label={t("timerReminder.test")}
           description={t("timerReminder.testDescription")}
         >

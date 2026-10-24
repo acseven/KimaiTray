@@ -89,5 +89,14 @@
         <decimal id="NoTimerReminderMinutes" valueName="NoTimerReminderMinutes" minValue="1" maxValue="1440" />
       </elements>
     </policy>
+    <policy name="LongTimerWarning" class="Both" displayName="$(string.LongTimerWarning)" explainText="$(string.LongTimerWarning_Help)" presentation="$(presentation.LongTimerWarning)" key="Software\Policies\KimaiTray" valueName="EnableLongTimerWarning">
+      <parentCategory ref="KimaiTray" />
+      <supportedOn ref="SUPPORTED_KimaiTray" />
+      <enabledValue><decimal value="1" /></enabledValue>
+      <disabledValue><decimal value="0" /></disabledValue>
+      <elements>
+        <decimal id="LongTimerWarningHours" valueName="LongTimerWarningHours" minValue="1" maxValue="72" />
+      </elements>
+    </policy>
   </policies>
 </policyDefinitions>

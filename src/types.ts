@@ -123,6 +123,8 @@ export interface AppSettings {
 
   enableNoTimerReminder: boolean;
   noTimerReminderMinutes: number;
+  enableLongTimerWarning: boolean;
+  longTimerWarningHours: number;
 
   theme: "light" | "dark" | "transparent";
   uiSize: "small" | "default" | "large" | "scale130" | "scale145" | "scale160";

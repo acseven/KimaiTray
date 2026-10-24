@@ -6,6 +6,15 @@ export const REMINDER_WINDOW_LABEL = "timer-reminder";
 export const REMINDER_SHOW_EVENT = "kimai://reminder-show";
 export const REMINDER_RENDERED_EVENT = "kimai://reminder-rendered";
 export const IDLE_REMINDER_ACTION_EVENT = "kimai://idle-reminder-action";
+export const LONG_TIMER_ACTION_EVENT = "kimai://long-timer-action";
+
+/** Hours a long-running timer warning can be dismissed for. */
+export const LONG_TIMER_SNOOZE_HOURS = [2, 4, 8] as const;
+
+export type LongTimerAction =
+  | { action: "stop"; timesheetId: number }
+  | { action: "snooze"; timesheetId: number; hours: number }
+  | { action: "dismissed"; timesheetId: number };
 
 export type IdleReminderAction =
   | "continue"
@@ -15,6 +24,14 @@ export type IdleReminderAction =
 
 export type ReminderShowPayload =
   | { kind: "timer" }
+  | {
+      kind: "longTimer";
+      timesheetId: number;
+      project: string;
+      activity: string;
+      beginIso: string;
+      runningSeconds: number;
+    }
   | {
       kind: "idle";
       test: boolean;

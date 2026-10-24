@@ -71,6 +71,9 @@ export const defaultSettings: AppSettings = {
   enableNoTimerReminder: false,
   noTimerReminderMinutes: 15,
 
+  enableLongTimerWarning: true,
+  longTimerWarningHours: 12,
+
   theme: "light",
   uiSize: "default",
   popupWidth: 360,
@@ -474,6 +477,16 @@ function normalizeSettings(raw?: Partial<AppSettings> | null): AppSettings {
       defaultSettings.noTimerReminderMinutes,
       1,
       1440,
+    ),
+    enableLongTimerWarning: booleanValue(
+      value.enableLongTimerWarning,
+      defaultSettings.enableLongTimerWarning,
+    ),
+    longTimerWarningHours: integerValue(
+      value.longTimerWarningHours,
+      defaultSettings.longTimerWarningHours,
+      1,
+      72,
     ),
     theme: enumValue(
       value.theme,

@@ -6,11 +6,14 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import type { AppSettings } from "../types";
 import type {
   IdleReminderAction,
+  LongTimerAction,
   ReminderShowRequest,
   ReminderShowPayload,
 } from "../api/reminderWindow";
 import {
   IDLE_REMINDER_ACTION_EVENT,
+  LONG_TIMER_ACTION_EVENT,
+  LONG_TIMER_SNOOZE_HOURS,
   REMINDER_RENDERED_EVENT,
   REMINDER_SHOW_EVENT,
 } from "../api/reminderWindow";
@@ -37,6 +40,14 @@ function formatDuration(totalSeconds: number): string {
   if (hours > 0) return `${hours}h ${minutes}m`;
   if (minutes > 0) return `${minutes} min`;
   return `${totalSeconds}s`;
+}
+
+function formatDateTime(iso: string): string {
+  return new Date(iso).toLocaleString(undefined, {
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 function formatTime(iso: string): string {
@@ -123,21 +134,96 @@ export default function TimerReminder() {
     }
   }, [t]);
 
+  const sendLongTimerAction = useCallback((action: LongTimerAction) => {
+    // The popup owns the timers; this window only reports the choice.
+    void emitTo("tray-popup", LONG_TIMER_ACTION_EVENT, action).catch((error) => {
+      logger.error(`Failed to send long timer action: ${String(error)}`);
+    });
+    dismiss();
+  }, [dismiss]);
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       if (content?.kind === "idle" && !content.test) {
         void sendIdleAction("continue");
+      } else if (content?.kind === "longTimer") {
+        sendLongTimerAction({ action: "dismissed", timesheetId: content.timesheetId });
       } else {
         dismiss();
       }
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [content, dismiss, sendIdleAction]);
+  }, [content, dismiss, sendIdleAction, sendLongTimerAction]);
 
   if (!content) {
     return <main aria-hidden="true" className="h-screen w-screen bg-slate-950" />;
+  }
+
+  if (content.kind === "longTimer") {
+    const timesheetId = content.timesheetId;
+    const buttonBase =
+      "rounded-xl px-5 py-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-slate-950";
+
+    return (
+      <main
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="long-timer-title"
+        aria-describedby="long-timer-description"
+        className="relative flex h-screen w-screen items-center justify-center overflow-hidden bg-slate-950/70 px-6 text-white"
+      >
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(239,68,68,0.28),transparent_48%)]" />
+        <div className="relative flex w-full max-w-3xl flex-col items-center text-center">
+          <div className="mb-7 flex h-24 w-24 items-center justify-center rounded-full border border-red-200/20 bg-red-400/10 shadow-2xl shadow-red-500/20">
+            <svg className="h-12 w-12 text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.24em] text-red-300">
+            KimaiTray
+          </p>
+          <h1 id="long-timer-title" className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
+            {t("longTimer.title", { duration: formatDuration(content.runningSeconds) })}
+          </h1>
+          <p id="long-timer-description" className="mt-4 text-lg text-slate-300 sm:text-xl">
+            {t("longTimer.description", { time: formatDateTime(content.beginIso) })}
+          </p>
+
+          <div className="mt-7 w-full max-w-xl rounded-2xl border border-white/10 bg-black/20 px-5 py-4 backdrop-blur-sm">
+            <p className="text-xs uppercase tracking-wider text-slate-400">{t("idle.activeTimer")}</p>
+            <p className="mt-1 truncate text-base font-semibold">
+              {content.project}
+              <span className="font-normal text-slate-400"> — {content.activity}</span>
+            </p>
+          </div>
+
+          <div className="mt-8 grid w-full max-w-xl gap-3 sm:grid-cols-2">
+            <button type="button" onClick={() => sendLongTimerAction({ action: "stop", timesheetId })} className={`${buttonBase} bg-red-500 text-white hover:bg-red-400`}>
+              {t("longTimer.stop")}
+            </button>
+            <button type="button" autoFocus onClick={() => sendLongTimerAction({ action: "dismissed", timesheetId })} className={`${buttonBase} bg-white/10 text-white hover:bg-white/20`}>
+              {t("longTimer.remindInHour")}
+            </button>
+          </div>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-sm text-slate-300">
+            <span>{t("longTimer.dismissFor")}</span>
+            {LONG_TIMER_SNOOZE_HOURS.map((hours) => (
+              <button
+                key={hours}
+                type="button"
+                onClick={() => sendLongTimerAction({ action: "snooze", timesheetId, hours })}
+                className="rounded-lg bg-white/5 px-3 py-1.5 font-medium text-slate-200 transition hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              >
+                {t("longTimer.hours", { count: hours })}
+              </button>
+            ))}
+          </div>
+          <p className="mt-4 text-xs text-slate-400">{t("longTimer.escapeHint")}</p>
+        </div>
+      </main>
+    );
   }
 
   if (content.kind === "idle") {

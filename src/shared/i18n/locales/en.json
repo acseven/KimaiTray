@@ -767,5 +767,18 @@
   },
   "policy": {
     "managed": "Managed by your organization"
+  },
+  "longTimer": {
+    "enable": "Warn about long-running timers",
+    "enableDescription": "Show a full-screen warning when a timer has been running for too long, then every hour",
+    "threshold": "Warn after",
+    "thresholdDescription": "Hours a timer may run before the first warning",
+    "title": "Timer running for {{duration}}",
+    "description": "Started {{time}}. Did you forget to stop it?",
+    "stop": "Stop timer now",
+    "remindInHour": "Remind me in 1 hour",
+    "dismissFor": "Dismiss for",
+    "hours": "{{count}} h",
+    "escapeHint": "Press Esc to be reminded again in 1 hour"
   }
 }

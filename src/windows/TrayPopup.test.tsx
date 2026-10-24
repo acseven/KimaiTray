@@ -97,6 +97,7 @@ vi.mock("../hooks/useKimaiTags", () => ({ useKimaiTags: () => ["tag"] }));
 vi.mock("../hooks/useDeleteTimesheet", () => ({ useDeleteTimesheet: () => ({ deleteEntry: mocks.deleteEntry, deletingId: null, deleteError: mocks.kimai.deleteError ?? null, dismissError: mocks.kimai.dismissDeleteError }) }));
 vi.mock("../hooks/useIdleDetection", () => ({ useIdleDetection: () => mocks.idle }));
 vi.mock("../hooks/useNoTimerReminder", () => ({ useNoTimerReminder: vi.fn() }));
+vi.mock("../hooks/useLongTimerWarning", () => ({ useLongTimerWarning: vi.fn() }));
 vi.mock("../hooks/useAppearance", () => ({ useAppearance: vi.fn() }));
 vi.mock("../hooks/useLanguageSync", () => ({ useLanguageSync: vi.fn() }));
 vi.mock("../hooks/useUpdater", () => ({ useUpdater: () => mocks.updater }));

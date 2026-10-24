@@ -72,6 +72,15 @@ If you enable this policy, the reminder is turned on; you can also set after how
 If you disable this policy, the reminder is turned off and users cannot turn it on.
 
 If you do not configure this policy, users decide.</string>
+
+      <string id="LongTimerWarning">Warning for long-running timers</string>
+      <string id="LongTimerWarning_Help">Controls the full-screen warning shown when a timer has been running for a long time, for example because the user forgot to stop it.
+
+If you enable this policy, the warning is turned on and appears after the number of hours you set (12 by default). It then repeats every hour; users can stop the timer, or dismiss the warning for 1, 2, 4 or 8 hours.
+
+If you disable this policy, the warning is turned off and users cannot turn it on.
+
+If you do not configure this policy, the warning is on by default after 12 hours and users decide.</string>
     </stringTable>
     <presentationTable>
       <presentation id="KimaiServer">
@@ -92,6 +101,9 @@ If you do not configure this policy, users decide.</string>
       </presentation>
       <presentation id="NoTimerReminder">
         <decimalTextBox refId="NoTimerReminderMinutes" defaultValue="15">Remind after (minutes without a timer, 1–1440):</decimalTextBox>
+      </presentation>
+      <presentation id="LongTimerWarning">
+        <decimalTextBox refId="LongTimerWarningHours" defaultValue="12">Warn after (hours, 1–72):</decimalTextBox>
       </presentation>
     </presentationTable>
   </resources>

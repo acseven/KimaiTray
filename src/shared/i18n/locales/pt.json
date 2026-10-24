@@ -767,5 +767,18 @@
   },
   "policy": {
     "managed": "Gerido pela sua organização"
+  },
+  "longTimer": {
+    "enable": "Avisar sobre temporizadores longos",
+    "enableDescription": "Mostrar um aviso em ecrã inteiro quando um temporizador está em curso há demasiado tempo e, depois, a cada hora",
+    "threshold": "Avisar após",
+    "thresholdDescription": "Horas que um temporizador pode estar em curso antes do primeiro aviso",
+    "title": "Temporizador em curso há {{duration}}",
+    "description": "Iniciado {{time}}. Esqueceu-se de o parar?",
+    "stop": "Parar o temporizador agora",
+    "remindInHour": "Lembrar daqui a 1 hora",
+    "dismissFor": "Ignorar durante",
+    "hours": "{{count}} h",
+    "escapeHint": "Prima Esc para ser lembrado novamente daqui a 1 hora"
   }
 }

@@ -767,5 +767,18 @@
   },
   "policy": {
     "managed": "Spravované vašou organizáciou"
+  },
+  "longTimer": {
+    "enable": "Upozorňovať na dlho bežiace časovače",
+    "enableDescription": "Zobraziť upozornenie na celú obrazovku, keď časovač beží príliš dlho, a potom každú hodinu",
+    "threshold": "Upozorniť po",
+    "thresholdDescription": "Počet hodín, počas ktorých môže časovač bežať pred prvým upozornením",
+    "title": "Časovač beží {{duration}}",
+    "description": "Spustené {{time}}. Nezabudli ste ho zastaviť?",
+    "stop": "Zastaviť časovač",
+    "remindInHour": "Pripomenúť o 1 hodinu",
+    "dismissFor": "Skryť na",
+    "hours": "{{count}} h",
+    "escapeHint": "Stlačte Esc a pripomenutie sa zobrazí znova o 1 hodinu"
   }
 }

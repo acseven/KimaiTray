@@ -5,6 +5,9 @@ name: Windows Test Build
 on:
   push:
     branches: ["ci/windows-test-build"]
+    paths-ignore:
+      - ".github/workflows/cleanup-test-builds.yml"
+      - ".github/scripts/cleanup-test-builds.sh"
   workflow_dispatch:
 
 permissions:
@@ -94,3 +97,14 @@ jobs:
           tag="log-${GITHUB_SHA::7}-${{ matrix.target }}"
           gh release create "$tag" --draft --title "Build log ${GITHUB_SHA::7} (${{ matrix.target }})" --notes "Failed test build."
           for f in status.log build-tail.log merge-tail.log; do gh release upload "$tag" "$f" || true; done
+
+  cleanup:
+    needs: windows
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - name: Delete older test build drafts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: .github/scripts/cleanup-test-builds.sh

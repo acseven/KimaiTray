@@ -1,0 +1,25 @@
+name: Clean Up Test Builds
+
+# Runs when this workflow or its script changes; test builds also clean up
+# after themselves once both architectures succeed.
+on:
+  push:
+    branches: ["ci/windows-test-build"]
+    paths:
+      - ".github/workflows/cleanup-test-builds.yml"
+      - ".github/scripts/cleanup-test-builds.sh"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - name: Delete old test build drafts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: .github/scripts/cleanup-test-builds.sh

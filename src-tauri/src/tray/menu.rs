@@ -123,17 +123,17 @@ pub(super) fn build_tray_menu(
     let settings_i = MenuItem::with_id(app, "settings", settings_label, true, None::<&str>)?;
     let open_kimai_i = MenuItem::with_id(app, "open_kimai", open_kimai_label, true, None::<&str>)?;
     let refresh_i = MenuItem::with_id(app, "refresh", refresh_label, true, None::<&str>)?;
-    let quit_i = MenuItem::with_id(app, "quit", quit_label, true, None::<&str>)?;
-
-    MenuBuilder::new(app)
+    let menu = MenuBuilder::new(app)
         .item(&toggle_i)
         .separator()
         .item(&settings_i)
         .item(&open_kimai_i)
-        .item(&refresh_i)
-        .separator()
-        .item(&quit_i)
-        .build()
+        .item(&refresh_i);
+    if crate::policy::quit_disabled() {
+        return menu.build();
+    }
+    let quit_i = MenuItem::with_id(app, "quit", quit_label, true, None::<&str>)?;
+    menu.separator().item(&quit_i).build()
 }
 
 pub(super) fn left_click_opens_popup() -> bool {

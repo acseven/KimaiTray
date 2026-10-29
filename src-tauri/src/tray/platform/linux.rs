@@ -161,9 +161,11 @@ fn legacy_menu(app: &AppHandle, labels: [&str; 5]) -> gtk::Menu {
     add(&menu, labels[2], Rc::new(move || open_kimai(&handle)));
     let handle = app.clone();
     add(&menu, labels[3], Rc::new(move || refresh_popup(&handle)));
-    menu.append(&gtk::SeparatorMenuItem::new());
-    let handle = app.clone();
-    add(&menu, labels[4], Rc::new(move || handle.exit(0)));
+    if !crate::policy::quit_disabled() {
+        menu.append(&gtk::SeparatorMenuItem::new());
+        let handle = app.clone();
+        add(&menu, labels[4], Rc::new(move || handle.exit(0)));
+    }
     menu.show_all();
     menu
 }

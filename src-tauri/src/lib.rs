@@ -316,6 +316,12 @@ pub fn run() {
                     tray::on_popup_focus_changed(window, *focused);
                 }
                 tauri::WindowEvent::Resized(_) => tray::on_popup_resize(),
+                // Alt+F4 would destroy the popup; keep it when quitting is
+                // disabled by policy.
+                tauri::WindowEvent::CloseRequested { api, .. } if policy::quit_disabled() => {
+                    api.prevent_close();
+                    let _ = window.hide();
+                }
                 _ => {}
             },
             "settings" | "changelog" => {
@@ -326,10 +332,19 @@ pub fn run() {
             }
             _ => {}
         })
-        .run(tauri::generate_context!())
+        .build(tauri::generate_context!())
         .unwrap_or_else(|e| {
             eprintln!("Fatal: failed to start KimaiTray: {e}");
             std::process::exit(1);
+        })
+        .run(|_app, event| {
+            // A request without an exit code comes from the last window
+            // closing, not from an explicit exit or an update restart.
+            if let tauri::RunEvent::ExitRequested { code: None, api, .. } = event {
+                if policy::quit_disabled() {
+                    api.prevent_exit();
+                }
+            }
         });
 }
 

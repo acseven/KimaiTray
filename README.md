@@ -291,6 +291,7 @@ over a user policy. Enforced settings are locked in KimaiTray and marked
 | Idle detection | `EnableIdleDetection` (REG_DWORD 0/1), `IdleThresholdMinutes` (1–60), `IdleAction` (`ask`, `stop`, `discard`, `continue`) | Forces idle detection and its options |
 | Reminder when no timer is running | `EnableNoTimerReminder` (REG_DWORD 0/1), `NoTimerReminderMinutes` (1–1440) | Forces the full-screen reminder and its delay |
 | Warning for long-running timers | `EnableLongTimerWarning` (REG_DWORD 0/1), `LongTimerWarningHours` (1–72) | Forces the long-running timer warning and after how many hours it starts |
+| Prevent quitting KimaiTray | `DisableQuit` (REG_DWORD 1) | Removes Quit from the tray menu and keeps KimaiTray running when its windows are closed; sign-out, shutdown and update restarts still end it |
 
 Policies are read when KimaiTray starts. Invalid values are ignored. API
 tokens are personal and cannot be set by policy; users create them with the

@@ -31,6 +31,7 @@ const POLICY_VALUES: &[(&str, &str, Kind)] = &[
     ("NoTimerReminderMinutes", "noTimerReminderMinutes", Kind::Number),
     ("EnableLongTimerWarning", "enableLongTimerWarning", Kind::Number),
     ("LongTimerWarningHours", "longTimerWarningHours", Kind::Number),
+    ("DisableQuit", "disableQuit", Kind::Number),
 ];
 
 /// Machine values take precedence; user values only fill the gaps.
@@ -148,6 +149,15 @@ pub fn read_policy() -> Map<String, Value> {
     {
         merge(Map::new(), Map::new())
     }
+}
+
+/// Whether the administrator removed every way to quit KimaiTray. Read once,
+/// like the rest of the policy, when the app starts.
+pub fn quit_disabled() -> bool {
+    static DISABLED: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+    *DISABLED.get_or_init(|| {
+        read_policy().get("disableQuit").and_then(Value::as_u64) == Some(1)
+    })
 }
 
 #[tauri::command]

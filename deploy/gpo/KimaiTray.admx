@@ -98,5 +98,11 @@
         <decimal id="LongTimerWarningHours" valueName="LongTimerWarningHours" minValue="1" maxValue="72" />
       </elements>
     </policy>
+    <policy name="DisableQuit" class="Both" displayName="$(string.DisableQuit)" explainText="$(string.DisableQuit_Help)" key="Software\Policies\KimaiTray" valueName="DisableQuit">
+      <parentCategory ref="KimaiTray" />
+      <supportedOn ref="SUPPORTED_KimaiTray" />
+      <enabledValue><decimal value="1" /></enabledValue>
+      <disabledValue><decimal value="0" /></disabledValue>
+    </policy>
   </policies>
 </policyDefinitions>

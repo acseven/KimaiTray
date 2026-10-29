@@ -45,7 +45,7 @@ pub(super) fn create_tauri_tray(app: &AppHandle) -> tauri::Result<()> {
             }
             "open_kimai" => open_kimai(app),
             "refresh" => refresh_popup(app),
-            "quit" => {
+            "quit" if !crate::policy::quit_disabled() => {
                 app.exit(0);
             }
             _ => {}

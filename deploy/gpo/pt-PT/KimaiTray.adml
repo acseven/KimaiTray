@@ -81,6 +81,13 @@ Se ativar esta política, o aviso fica ligado e aparece após o número de horas
 Se desativar esta política, o aviso fica desligado e os utilizadores não o podem ligar.
 
 Se não configurar esta política, o aviso está ligado por predefinição após 12 horas e os utilizadores decidem.</string>
+
+      <string id="DisableQuit">Impedir que o KimaiTray seja encerrado</string>
+      <string id="DisableQuit_Help">Se ativar esta política, os utilizadores não podem encerrar o KimaiTray: o comando Sair é removido do menu da área de notificação e fechar as janelas apenas as oculta. O KimaiTray continua a terminar quando o utilizador termina sessão ou o computador é desligado, e quando reinicia para instalar uma atualização.
+
+Os utilizadores com permissões suficientes podem ainda terminar o processo, por exemplo no Gestor de Tarefas. Combine esta política com "Iniciar o KimaiTray ao iniciar sessão" para que o KimaiTray esteja em execução após cada início de sessão.
+
+Se desativar ou não configurar esta política, os utilizadores podem encerrar o KimaiTray a partir do menu da área de notificação.</string>
     </stringTable>
     <presentationTable>
       <presentation id="KimaiServer">

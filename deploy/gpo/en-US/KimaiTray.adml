@@ -81,6 +81,13 @@ If you enable this policy, the warning is turned on and appears after the number
 If you disable this policy, the warning is turned off and users cannot turn it on.
 
 If you do not configure this policy, the warning is on by default after 12 hours and users decide.</string>
+
+      <string id="DisableQuit">Prevent quitting KimaiTray</string>
+      <string id="DisableQuit_Help">If you enable this policy, users cannot quit KimaiTray: the Quit command is removed from the tray menu and closing its windows only hides them. KimaiTray still closes when the user signs out or the computer shuts down, and when it restarts to install an update.
+
+Users with sufficient rights can still end the process, for example in Task Manager. Combine this policy with "Launch KimaiTray at sign-in" so KimaiTray is running after every sign-in.
+
+If you disable or do not configure this policy, users can quit KimaiTray from the tray menu.</string>
     </stringTable>
     <presentationTable>
       <presentation id="KimaiServer">
